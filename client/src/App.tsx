@@ -7,7 +7,7 @@ function App() {
 
     // Fetching message from backend on mount
     useEffect(() => {
-        fetch("http://localhost:4000")
+        fetch("https://collabtime-mern-backend.onrender.com")
             .then((res) => res.json())
             .then((data) => setMessage(data.message));
     }, []);
@@ -15,7 +15,7 @@ function App() {
     const createEvent = async () => {
         const event = { name: "New Event", description: "New Event Desc" };
         const createEvent = await axios.post(
-            "http://localhost:4000/create_event",
+            "https://collabtime-mern-backend.onrender.com/create_event",
             event
         );
         const data = createEvent;
@@ -23,7 +23,9 @@ function App() {
     };
 
     const getEvents = async () => {
-        const data = (await axios.get("http://localhost:4000/events")) as any;
+        const data = (await axios.get(
+            "https://collabtime-mern-backend.onrender.com/events"
+        )) as any;
         setEvents(data);
     };
 
