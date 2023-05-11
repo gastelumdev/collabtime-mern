@@ -8,10 +8,13 @@ const eventModel = require("./models");
 
 connectDB();
 
+const DEBUG = process.env.DEBUG || false;
+const origin = DEBUG ? "http://localhost:3000" : "https://collabtime.onrender.com";
+
 // middleware
 const corsOptions = {
-    // origin: "http://localhost:3000" 
-    origin: "https://collabtime.onrender.com" 
+    origin: origin
+    // origin: "https://collabtime.onrender.com"
 }
 app.use(express.json());
 app.use(cors(corsOptions));
