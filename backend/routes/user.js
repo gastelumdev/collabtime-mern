@@ -3,7 +3,8 @@ var express = require("express"),
   verifyToken = require('../middleware/authJWT'),
   {
     signup,
-    signin
+    signin,
+    getUser
   } = require("../controllers/auth.js");
 
 router.post("/register", signup, function (req, res) {
@@ -13,6 +14,8 @@ router.post("/register", signup, function (req, res) {
 router.post("/login", signin, function (req, res) {
 
 });
+
+router.get("/user/:id", verifyToken, getUser);
 
 router.get("/hiddencontent", verifyToken, function (req, res) {
     if (!req.user) {

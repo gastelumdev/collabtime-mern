@@ -9,6 +9,10 @@ const EventSchema = new mongoose.Schema({
         type: String,
         required: false
     },
+    owner: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }
 });
 
 const Event = mongoose.model("Event", EventSchema);
