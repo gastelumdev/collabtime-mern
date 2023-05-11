@@ -12,12 +12,12 @@ const eventModel = require("./models/Event");
 connectDB();
 
 // const DEBUG = process.env.DEBUG || false;
-const origin = process.env.DEBUG ? "http://localhost:3000" : "https://collabtime.onrender.com";
+// const origin = process.env.DEBUG ? "http://localhost:3000" : "https://collabtime.onrender.com";
 
 // middleware
 const corsOptions = {
-    origin: origin
-    // origin: "https://collabtime.onrender.com"
+    origin: "https://collabtime.onrender.com"
+    // origin: "http://localhost:3000"
 }
 
 app.use(bodyparser.urlencoded({ extended: false }));
