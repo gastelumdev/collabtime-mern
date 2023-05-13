@@ -41,9 +41,14 @@ export const getSessionAsync = createAsyncThunk(
     'auth/session',
     async () => {
         try {
-            const response = await getSession();
-            console.log(response.data);
-            return response.data;
+            if (localStorage.getItem("token")) {
+                const response = await getSession();
+                console.log(response.data);
+                return response.data;
+            }
+
+            return false;
+            
         } catch (err) {
             const error = err as Error | AxiosError;
             console.log(error);
