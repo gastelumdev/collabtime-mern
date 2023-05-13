@@ -26,9 +26,12 @@ const Events = () => {
     };
 
     const getEvents = async () => {
-        const response = (await axios.get<Array<TEvent>>(
-            API_URL + "/events"
-        )) as any;
+        const response = (await axios.get<Array<TEvent>>(API_URL + "/events", {
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "JWT " + localStorage.getItem("token"),
+            },
+        })) as any;
 
         console.log("Response", response);
 

@@ -4,7 +4,8 @@ var express = require("express"),
   {
     signup,
     signin,
-    getUser
+    getUser,
+    getSession
   } = require("../controllers/auth.js");
 
 router.post("/register", signup, function (req, res) {
@@ -16,6 +17,8 @@ router.post("/login", signin, function (req, res) {
 });
 
 router.get("/user/:id", verifyToken, getUser);
+
+router.get("/user/session/:id", verifyToken, getSession);
 
 router.get("/hiddencontent", verifyToken, function (req, res) {
     if (!req.user) {

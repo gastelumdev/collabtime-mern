@@ -28,6 +28,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
       },
+      isAuthenticated: {
+        type: Boolean,
+        required: true
+      },
       created: {
         type: Date,
         default: Date.now
