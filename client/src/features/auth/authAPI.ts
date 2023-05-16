@@ -10,3 +10,7 @@ export const login = ({email, password}: TSignin) => {
 export const getSession = () => {
     return axios.get(API_URL + "/user/session/" + localStorage.getItem("userId"), {headers: {"Content-Type": "application/json", Authorization: "JWT " + localStorage.getItem("token"),}})
 }
+
+export const logout = () => {
+    return axios.get(API_URL + "/logout/" + localStorage.getItem("userId"), {headers: {"Content-Type": "application/json", Authorization: "JWT " + localStorage.getItem("token"),}})
+}

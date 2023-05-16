@@ -1,7 +1,9 @@
 import React from "react";
 import { useEffect, useState } from "react";
+import { useAppSelector, useAppDispatch } from "../app/hooks";
 import axios from "axios";
 import API_URL from "../features/api/api_url";
+import { logoutAsync } from "../features/auth/authSlice";
 
 console.log(API_URL);
 
@@ -13,6 +15,7 @@ interface TEvent {
 
 const Events = () => {
     const [events, setEvents] = useState<Array<TEvent>>([]);
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
         getEvents();
@@ -26,16 +29,25 @@ const Events = () => {
     };
 
     const getEvents = async () => {
-        const response = (await axios.get<Array<TEvent>>(API_URL + "/events", {
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "JWT " + localStorage.getItem("token"),
-            },
-        })) as any;
+        if (localStorage.getItem("token")) {
+            const response = (await axios.get<Array<TEvent>>(
+                API_URL + "/events",
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: "JWT " + localStorage.getItem("token"),
+                    },
+                }
+            )) as any;
 
-        console.log("Response", response);
+            console.log("Response", response);
 
-        return setEvents(response.data);
+            return setEvents(response.data);
+        }
+    };
+
+    const logout = async () => {
+        dispatch(logoutAsync());
     };
 
     return (
@@ -48,6 +60,7 @@ const Events = () => {
                 </div>
             ))}
             <button onClick={() => createEvent()}>Create Event</button>
+            <button onClick={() => logout()}>Logout</button>
         </div>
     );
 };

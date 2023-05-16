@@ -7,7 +7,9 @@ const verifyToken = (req, res, next) => {
     jwt.verify(req.headers.authorization.split(' ')[1], process.env.API_SECRET || "myapisecret", async function (err, decode) {
       if (err) req.user = undefined;
 
-      if (decode.id) {
+      console.log(decode);
+
+      try {
         console.log(decode.id)
         const user = await User.findOne({
             _id: decode.id
@@ -21,7 +23,8 @@ const verifyToken = (req, res, next) => {
           } catch (error) {
               res.status(500).send({message: error});
         }
-      } else {
+      } catch(error) {
+        console.log(error)
         req.user = undefined;
         next();
       }

@@ -115,3 +115,22 @@ exports.getSession = async (req, res) => {
     res.status(500).send(error)
   }
 }
+
+exports.logout = async (req, res) => {
+  const user = await User.findOne({_id: req.params.id});
+
+  console.log("Logout: ", user)
+
+  try {
+    if (!user) {
+      res.status(401).send()
+    } else {
+      const response = await User.updateOne({_id: user._id}, {isAuthenticated: false});
+      res.send(false);
+    }
+
+    
+  } catch (error) {
+    res.status(500).send(error)
+  }
+}

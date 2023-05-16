@@ -16,14 +16,14 @@ const PrivateRoutes = () => {
 
     useEffect(() => {
         dispatch(getSessionAsync());
-    }, [isAuthenticated]);
+    }, []);
 
     console.log("isAuthenticated", isAuthenticated);
     if (status === "loading") {
         return null;
     }
 
-    if (isAuthenticated) {
+    if (isAuthenticated && localStorage.getItem("token")) {
         return <Outlet />;
     }
     return <Navigate to="/login" replace />;

@@ -1,7 +1,7 @@
 import { AxiosError } from 'axios';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { getSession, login } from './authAPI';
+import { getSession, login, logout } from './authAPI';
 import { TSignin } from '../types/auth';
 import { TypedUseSelectorHook } from 'react-redux';
 import { ErrorResponse } from '@remix-run/router';
@@ -57,6 +57,23 @@ export const getSessionAsync = createAsyncThunk(
     }
 )
 
+export const logoutAsync = createAsyncThunk(
+    'auth/logout',
+    async () => {
+        try {
+            const response = await logout();
+            
+            // localStorage.setItem("token", "");
+            // localStorage.setItem("userId", "");
+            return response.data;
+            
+        } catch (err) {
+            const error = err as Error | AxiosError;
+            console.log(error);
+        }
+    }
+)
+
 export const authSlice = createSlice({
     name: 'auth',
     initialState,
@@ -85,6 +102,18 @@ export const authSlice = createSlice({
         .addCase(getSessionAsync.rejected, (state) => {
             state.status = 'failed';
             state.isAuthenticated = false;
+        })
+        .addCase(logoutAsync.pending, (state) => {
+            state.status = 'loading';
+        })
+        .addCase(logoutAsync.fulfilled, (state, action) => {
+            state.status = 'idle';
+            state.isAuthenticated = false;
+            localStorage.removeItem("token");
+            localStorage.removeItem("userId");
+        })
+        .addCase(logoutAsync.rejected, (state) => {
+            state.status = 'failed';
         })
     }
 });
