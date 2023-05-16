@@ -3,3 +3,9 @@ export interface TEvent {
     name: String;
     description: String;
 }
+
+export interface tEvent {
+    id?: String | null;
+    name: String;
+    description: String;
+}

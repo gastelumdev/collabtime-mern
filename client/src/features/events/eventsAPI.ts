@@ -9,3 +9,7 @@ export const getEvents = () => {
 export const createEvent = (event: TEvent) => {
     return axios.post(API_URL + "/events", event, {headers: {"Content-Type": "application/json", Authorization: "JWT " + localStorage.getItem("token"),}});
 }
+
+export const deleteEvent = (eventId: string) => {
+    return axios.post(API_URL + "/events/delete/" + eventId, {eventId: eventId}, {headers: {"Content-Type": "application/json", Authorization: "JWT " + localStorage.getItem("token"),}});
+}
