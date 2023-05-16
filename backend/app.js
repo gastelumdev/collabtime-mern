@@ -13,8 +13,8 @@ connectDB();
 
 // middleware
 const corsOptions = {
-    origin: "https://collabtime.onrender.com"
-    // origin: "http://localhost:3000"
+    // origin: "https://collabtime.onrender.com"
+    origin: "http://localhost:3000"
 }
 
 app.use(bodyparser.urlencoded({ extended: false }));
