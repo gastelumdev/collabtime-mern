@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { TEvent } from '../types/event';
-import { getEvents } from './eventsAPI';
+import { createEvent, getEvents } from './eventsAPI';
 
 interface TEventState {
     events: [TEvent] | [];
@@ -28,6 +28,19 @@ export const getEventsAsync = createAsyncThunk(
     }
 )
 
+export const createEventAsync = createAsyncThunk(
+    'events/create',
+    async (event: TEvent) => {
+        try {
+            const response = await createEvent(event);
+            return response.data;
+        } catch (err) {
+            const errors = err as Error | AxiosError;
+            console.log("Create event: ", errors);
+        }
+    }
+)
+
 export const eventsSlice = createSlice({
     name: 'events',
     initialState,
@@ -42,6 +55,17 @@ export const eventsSlice = createSlice({
             state.events = action.payload;
         })
         .addCase(getEventsAsync.rejected, (state) => {
+            state.status = 'failed';
+        })
+        builder
+        .addCase(createEventAsync.pending, (state) => {
+            state.status = 'loading';
+        })
+        .addCase(createEventAsync.fulfilled, (state, action) => {
+            state.status = 'idle';
+            state.events = action.payload;
+        })
+        .addCase(createEventAsync.rejected, (state) => {
             state.status = 'failed';
         })
     }
