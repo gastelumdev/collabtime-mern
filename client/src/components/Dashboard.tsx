@@ -47,8 +47,8 @@ const Dashboard = () => {
     // const eventId = useAppSelector(selectEventId);
     const params = useParams();
     const [eventId, setEventId] = useState(() => {
-        const saved = localStorage.getItem("lsEventId") || "";
-        const inittialValue = JSON.parse(saved);
+        const inittialValue = localStorage.getItem("eventId") || "";
+        // const inittialValue = JSON.parse(saved);
         return inittialValue || "";
     });
     return (

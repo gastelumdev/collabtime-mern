@@ -13,6 +13,7 @@ import {
     selectIsAuthenticated,
 } from "./features/auth/authSlice";
 import { useEffect, useState } from "react";
+import Dashboard from "./components/Dashboard";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(
@@ -30,6 +31,7 @@ function App() {
             <Routes>
                 <Route element={<PrivateRoutes />}>
                     <Route path="/" element={<Events />} />
+                    <Route path="/dashboard/:eventId" element={<Dashboard />} />
                 </Route>
                 <Route path="/login" element={<Login />} />
                 {/* <Route path="/register" element={<Register />} /> */}

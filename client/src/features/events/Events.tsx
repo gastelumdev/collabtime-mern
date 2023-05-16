@@ -43,6 +43,7 @@ import {
     useDisclosure,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
+import { Navigate } from "react-router-dom";
 
 console.log(API_URL);
 
@@ -55,25 +56,29 @@ interface TEvent {
 const Events = () => {
     const events = useAppSelector(selectEvents);
     const newEvent = useAppSelector(selectCreatedEvent);
+
     const [rerender, setRerender] = useState(true);
+    const [redirect, setRedirect] = useState(false);
+    const [data, setData] = useState<TEvent>({
+        name: "",
+        description: "",
+    });
+
     const dispatch = useAppDispatch();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const firstField = React.useRef();
 
     useEffect(() => {
         dispatch(getEventsAsync());
-    }, [dispatch, rerender]);
-
-    // const createEvent = async () => {
-    //     const event = { name: "New Event", description: "New Event Desc" };
-    //     const createEvent = await axios.post(API_URL + "/create_event", event);
-    //     const data = createEvent;
-    //     console.log(event);
-    // };
+    }, [dispatch, rerender, redirect]);
 
     const createEvent = async () => {
-        const event = { name: "New Event 1", description: "New Event Desc" };
-        dispatch(createEventAsync(event));
+        // const event = { name: "New Event 1", description: "New Event Desc" };
+        dispatch(createEventAsync(data));
+        setData({
+            name: "",
+            description: "",
+        });
         dispatch(getEventsAsync());
         setRerender(!rerender);
         onClose();
@@ -86,9 +91,19 @@ const Events = () => {
         setRerender(!rerender);
     };
 
-    const handleSetEventId = (eventId: number) => {
+    const handleSetEventId = (eventId: string) => {
         // dispatch(setEventId(eventId));
-        localStorage.setItem("lsEventId", JSON.stringify(eventId));
+        localStorage.setItem("eventId", eventId);
+        setRerender(!rerender);
+        setRedirect(true);
+    };
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { value, name } = event.target;
+        setData({
+            ...data,
+            [name]: value,
+        });
     };
 
     const onRerender = () => {
@@ -101,10 +116,19 @@ const Events = () => {
         dispatch(logoutAsync());
     };
 
+    if (redirect && localStorage.getItem("eventId"))
+        return (
+            <Navigate
+                to={`/dashboard/${localStorage.getItem("eventId")}/`}
+                replace
+            />
+        );
+
     return (
         <div>
             <NavBar logout={handleLogout} />
 
+            {/********** CREATE EVENT DRAWER **********/}
             <Drawer
                 isOpen={isOpen}
                 placement="right"
@@ -115,48 +139,33 @@ const Events = () => {
                 <DrawerContent>
                     <DrawerCloseButton />
                     <DrawerHeader borderBottomWidth="1px">
-                        Create a new account
+                        Create a new event
                     </DrawerHeader>
 
                     <DrawerBody>
                         <Stack spacing="24px">
                             <Box>
-                                <FormLabel htmlFor="username">Name</FormLabel>
+                                <FormLabel htmlFor="name">Name</FormLabel>
                                 <Input
                                     // ref={firstField}
-                                    id="username"
-                                    placeholder="Please enter user name"
+                                    id="name"
+                                    name="name"
+                                    placeholder="Please enter event name"
+                                    onChange={handleChange}
                                 />
                             </Box>
 
                             <Box>
-                                <FormLabel htmlFor="url">Url</FormLabel>
-                                <InputGroup>
-                                    <InputLeftAddon>http://</InputLeftAddon>
-                                    <Input
-                                        type="url"
-                                        id="url"
-                                        placeholder="Please enter domain"
-                                    />
-                                    <InputRightAddon>.com</InputRightAddon>
-                                </InputGroup>
-                            </Box>
-
-                            <Box>
-                                <FormLabel htmlFor="owner">
-                                    Select Owner
-                                </FormLabel>
-                                <Select id="owner" defaultValue="segun">
-                                    <option value="segun">Segun Adebayo</option>
-                                    <option value="kola">Kola Tioluwani</option>
-                                </Select>
-                            </Box>
-
-                            <Box>
-                                <FormLabel htmlFor="desc">
+                                <FormLabel htmlFor="name">
                                     Description
                                 </FormLabel>
-                                <Textarea id="desc" />
+                                <Input
+                                    // ref={firstField}
+                                    id="description"
+                                    name="description"
+                                    placeholder="Please enter event description"
+                                    onChange={handleChange}
+                                />
                             </Box>
                         </Stack>
                     </DrawerBody>
@@ -174,6 +183,8 @@ const Events = () => {
                     </DrawerFooter>
                 </DrawerContent>
             </Drawer>
+
+            {/********************* EVENTS BODY **********************/}
             <Container maxW="4xl" pt={"30px"} pb={"50px"}>
                 <Button
                     leftIcon={<AddIcon />}
@@ -204,6 +215,11 @@ const Events = () => {
                                 >
                                     Delete
                                 </button>
+                                <Button
+                                    onClick={() => handleSetEventId(event._id)}
+                                >
+                                    View
+                                </Button>
                             </CardFooter>
                         </Card>
                     ))}
