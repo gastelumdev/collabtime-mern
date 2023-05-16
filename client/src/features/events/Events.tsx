@@ -41,6 +41,7 @@ import {
     Stack,
     Textarea,
     useDisclosure,
+    HStack,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import { Navigate } from "react-router-dom";
@@ -210,16 +211,28 @@ const Events = () => {
                                 <Text>{event.description}</Text>
                             </CardBody>
                             <CardFooter>
-                                <button
-                                    onClick={() => handleDeleteEvent(event._id)}
-                                >
-                                    Delete
-                                </button>
-                                <Button
-                                    onClick={() => handleSetEventId(event._id)}
-                                >
-                                    View
-                                </Button>
+                                <HStack>
+                                    <Button
+                                        colorScheme="teal"
+                                        variant="ghost"
+                                        size="xs"
+                                        onClick={() =>
+                                            handleDeleteEvent(event._id)
+                                        }
+                                    >
+                                        Delete
+                                    </Button>
+                                    <Button
+                                        colorScheme="teal"
+                                        variant="ghost"
+                                        size="xs"
+                                        onClick={() =>
+                                            handleSetEventId(event._id)
+                                        }
+                                    >
+                                        View
+                                    </Button>
+                                </HStack>
                             </CardFooter>
                         </Card>
                     ))}
