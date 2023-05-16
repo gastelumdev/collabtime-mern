@@ -4,7 +4,12 @@ import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import axios from "axios";
 import API_URL from "../api/api_url";
 import { logoutAsync } from "../auth/authSlice";
-import { getEventsAsync, selectEvents } from "./eventsSlice";
+import {
+    createEventAsync,
+    getEventsAsync,
+    selectCreatedEvent,
+    selectEvents,
+} from "./eventsSlice";
 
 console.log(API_URL);
 
@@ -16,17 +21,24 @@ interface TEvent {
 
 const Events = () => {
     const events = useAppSelector(selectEvents);
+    const newEvent = useAppSelector(selectCreatedEvent);
     const dispatch = useAppDispatch();
 
     useEffect(() => {
         dispatch(getEventsAsync());
     }, [dispatch]);
 
+    // const createEvent = async () => {
+    //     const event = { name: "New Event", description: "New Event Desc" };
+    //     const createEvent = await axios.post(API_URL + "/create_event", event);
+    //     const data = createEvent;
+    //     console.log(event);
+    // };
+
     const createEvent = async () => {
-        const event = { name: "New Event", description: "New Event Desc" };
-        const createEvent = await axios.post(API_URL + "/create_event", event);
-        const data = createEvent;
-        console.log(event);
+        const event = { name: "New Event 1", description: "New Event Desc" };
+        dispatch(createEventAsync(event));
+        dispatch(getEventsAsync());
     };
 
     const logout = async () => {

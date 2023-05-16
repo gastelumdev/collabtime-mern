@@ -18,7 +18,7 @@ router.get("/events", verifyToken, async (request, response) => {
     
 });
 
-router.post("/create_event", verifyToken, async (request, response) => {
+router.post("/events", verifyToken, async (request, response) => {
     if (request.user) {
         const event = new eventModel(request.body);
 

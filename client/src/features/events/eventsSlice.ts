@@ -6,11 +6,13 @@ import { createEvent, getEvents } from './eventsAPI';
 
 interface TEventState {
     events: [TEvent] | [];
+    createdEvent: TEvent | {};
     status: 'idle' | 'loading' | 'failed';
 }
 
 const initialState: TEventState = {
     events: [],
+    createdEvent: {},
     status: 'loading',
 }
 
@@ -63,7 +65,7 @@ export const eventsSlice = createSlice({
         })
         .addCase(createEventAsync.fulfilled, (state, action) => {
             state.status = 'idle';
-            state.events = action.payload;
+            state.createdEvent = action.payload;
         })
         .addCase(createEventAsync.rejected, (state) => {
             state.status = 'failed';
@@ -72,5 +74,6 @@ export const eventsSlice = createSlice({
 })
 
 export const selectEvents = (state: RootState) => state.events.events;
+export const selectCreatedEvent = (state: RootState) => state.events.createdEvent;
 
 export default eventsSlice.reducer;
