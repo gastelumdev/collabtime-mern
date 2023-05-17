@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { TEvent } from '../types/event';
-import { createEvent, deleteEvent, getEvents } from './eventsAPI';
+import { createEvent, deleteEvent, getEvents, updateEvent } from './eventsAPI';
 
 interface TEventState {
     events: [TEvent] | [];
@@ -39,6 +39,19 @@ export const createEventAsync = createAsyncThunk(
         } catch (err) {
             const errors = err as Error | AxiosError;
             console.log("Create event: ", errors);
+        }
+    }
+)
+
+export const updateEventAsync = createAsyncThunk(
+    'events/update',
+    async (event: TEvent) => {
+        try {
+            const response = await updateEvent(event);
+            return response.data;
+        }  catch (err) {
+            const errors = err as Error | AxiosError;
+            console.log("Update event: ", errors);
         }
     }
 )

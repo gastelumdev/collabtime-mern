@@ -35,6 +35,20 @@ router.post("/events", verifyToken, async (request, response) => {
     }
 });
 
+router.post("/events/update/:id", verifyToken, async (request, response) => {
+    if (request.user) {
+        console.log("Try to edit", request.params.id);
+
+        try {
+            const res = await eventModel.findByIdAndUpdate(request.params.id, request.body)
+            console.log("Update res:", res);
+            response.send(res);
+        } catch (error) {
+            response.status(500).send(error);
+        }
+    }
+})
+
 router.post("/events/delete/:id", verifyToken, async (request, response) => {
     
     

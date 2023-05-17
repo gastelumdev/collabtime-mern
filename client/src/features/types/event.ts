@@ -1,11 +1,11 @@
 export interface TEvent {
     _id?: any | null;
-    name: String;
-    description: String;
+    name: string;
+    description: string;
 }
 
 export interface tEvent {
-    id?: String | null;
-    name: String;
-    description: String;
+    id?: string | null;
+    name: string;
+    description: string;
 }

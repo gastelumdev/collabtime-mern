@@ -10,6 +10,7 @@ import {
     getEventsAsync,
     selectCreatedEvent,
     selectEvents,
+    updateEventAsync,
 } from "./eventsSlice";
 import NavBar from "../../components/NavBar";
 import {
@@ -45,13 +46,14 @@ import {
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import { Navigate } from "react-router-dom";
+import EditEvent from "./EditEvent";
 
 console.log(API_URL);
 
 interface TEvent {
     _id?: any | null;
-    name: String;
-    description: String;
+    name: string;
+    description: string;
 }
 
 const Events = () => {
@@ -83,6 +85,17 @@ const Events = () => {
         dispatch(getEventsAsync());
         setRerender(!rerender);
         onClose();
+    };
+
+    const handleUpdateEventButton = (event: TEvent) => {
+        console.log(event);
+        onOpen();
+    };
+
+    const handleUpdateEvent = async (event: TEvent) => {
+        dispatch(updateEventAsync(data));
+        dispatch(getEventsAsync());
+        setRerender(!rerender);
     };
 
     const handleDeleteEvent = async (eventId: string) => {
@@ -217,20 +230,34 @@ const Events = () => {
                                         variant="ghost"
                                         size="xs"
                                         onClick={() =>
-                                            handleDeleteEvent(event._id)
+                                            handleSetEventId(event._id)
                                         }
                                     >
-                                        Delete
+                                        View
                                     </Button>
+                                    <EditEvent
+                                        _event={event}
+                                        onRerender={onRerender}
+                                    />
+                                    {/* <Button
+                                        colorScheme="teal"
+                                        variant="ghost"
+                                        size="xs"
+                                        onClick={() =>
+                                            handleUpdateEventButton(event)
+                                        }
+                                    >
+                                        Edit
+                                    </Button> */}
                                     <Button
                                         colorScheme="teal"
                                         variant="ghost"
                                         size="xs"
                                         onClick={() =>
-                                            handleSetEventId(event._id)
+                                            handleDeleteEvent(event._id)
                                         }
                                     >
-                                        View
+                                        Delete
                                     </Button>
                                 </HStack>
                             </CardFooter>
