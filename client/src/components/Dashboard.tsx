@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SidebarWithHeader from "./DashboardNav";
 import {
     Box,
@@ -12,20 +12,24 @@ import {
     Thead,
     Tr,
 } from "@chakra-ui/react";
-import { useAppSelector } from "../app/hooks";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
 // import { selectEventId } from "../features/events/eventsSlice";
 import DataTable from "react-data-table-component";
 import { useParams } from "react-router-dom";
+import {
+    getParticipantsAsync,
+    selectParticipants,
+} from "../features/participants/participantSlice";
 
 const columns = [
     {
-        name: "Title",
-        selector: (row: { title: any }) => row.title,
+        name: "Name",
+        selector: (row: { name: any }) => row.name,
         sortable: true,
     },
     {
-        name: "Year",
-        selector: (row: { year: any }) => row.year,
+        name: "Role",
+        selector: (row: { role: any }) => row.role,
         sortable: true,
     },
 ];
@@ -33,24 +37,32 @@ const columns = [
 const data = [
     {
         id: 1,
-        title: "Beetlejuice",
-        year: "1988",
+        name: "Beetlejuice",
+        role: "1988",
     },
     {
         id: 2,
-        title: "Ghostbusters",
-        year: "1984",
+        name: "Ghostbusters",
+        role: "1984",
     },
 ];
 
 const Dashboard = () => {
     // const eventId = useAppSelector(selectEventId);
+    const participants = useAppSelector(selectParticipants);
     const params = useParams();
     const [eventId, setEventId] = useState(() => {
         const inittialValue = localStorage.getItem("eventId") || "";
         // const inittialValue = JSON.parse(saved);
         return inittialValue || "";
     });
+
+    const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        dispatch(getParticipantsAsync(localStorage.getItem("eventId")));
+    }, [dispatch]);
+
     return (
         <ChakraProvider>
             <SidebarWithHeader>
@@ -65,38 +77,10 @@ const Dashboard = () => {
                 >
                     <DataTable
                         columns={columns}
-                        data={data}
+                        data={participants}
                         selectableRows
                         pagination
                     />
-                    {/* <TableContainer>
-                        <Table size="sm" variant="simple">
-                            <Thead>
-                                <Tr>
-                                    <Th>To convert</Th>
-                                    <Th>into</Th>
-                                    <Th isNumeric>multiply by</Th>
-                                </Tr>
-                            </Thead>
-                            <Tbody>
-                                <Tr>
-                                    <Td>inches</Td>
-                                    <Td>millimetres (mm)</Td>
-                                    <Td isNumeric>25.4</Td>
-                                </Tr>
-                                <Tr>
-                                    <Td>feet</Td>
-                                    <Td>centimetres (cm)</Td>
-                                    <Td isNumeric>30.48</Td>
-                                </Tr>
-                                <Tr>
-                                    <Td>yards</Td>
-                                    <Td>metres (m)</Td>
-                                    <Td isNumeric>0.91444</Td>
-                                </Tr>
-                            </Tbody>
-                        </Table>
-                    </TableContainer> */}
                 </Box>
             </SidebarWithHeader>
         </ChakraProvider>
