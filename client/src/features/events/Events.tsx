@@ -45,16 +45,17 @@ import {
     HStack,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import EditEvent from "./EditEvent";
+import { TEvent } from "../types/event";
 
 console.log(API_URL);
 
-interface TEvent {
-    _id?: any | null;
-    name: string;
-    description: string;
-}
+// interface TEvent {
+//     _id?: any | null;
+//     name: string;
+//     description: string;
+// }
 
 const Events = () => {
     const events = useAppSelector(selectEvents);
@@ -65,8 +66,10 @@ const Events = () => {
     const [data, setData] = useState<TEvent>({
         name: "",
         description: "",
+        owner: localStorage.getItem("userId"),
     });
 
+    const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const { isOpen, onOpen, onClose } = useDisclosure();
     const firstField = React.useRef();
@@ -81,6 +84,7 @@ const Events = () => {
         setData({
             name: "",
             description: "",
+            owner: "",
         });
         dispatch(getEventsAsync());
         setRerender(!rerender);
@@ -202,7 +206,7 @@ const Events = () => {
             <Container maxW="4xl" pt={"30px"} pb={"50px"}>
                 <Button
                     leftIcon={<AddIcon />}
-                    colorScheme="teal"
+                    colorScheme="blue"
                     onClick={onOpen}
                 >
                     Create user
@@ -226,7 +230,7 @@ const Events = () => {
                             <CardFooter>
                                 <HStack>
                                     <Button
-                                        colorScheme="teal"
+                                        colorScheme="blue"
                                         variant="ghost"
                                         size="xs"
                                         onClick={() =>
@@ -250,7 +254,7 @@ const Events = () => {
                                         Edit
                                     </Button> */}
                                     <Button
-                                        colorScheme="teal"
+                                        colorScheme="red"
                                         variant="ghost"
                                         size="xs"
                                         onClick={() =>

@@ -6,7 +6,10 @@ const { default: mongoose } = require("mongoose");
 
 router.get("/events", verifyToken, async (request, response) => {
     if (request.user) {
-        const events = await eventModel.find({});
+        console.log("Owner:", request.user)
+        const events = await eventModel.find({owner: request.user._id});
+
+        console.log("Events: ", events)
 
         try {
             response.send(events);

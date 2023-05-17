@@ -28,7 +28,11 @@ const EditEvent = (props: PropsType) => {
     const [redirect, setRedirect] = useState(false);
     const { _event, onRerender } = props;
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const [data, setData] = useState<TEvent>({ name: "", description: "" });
+    const [data, setData] = useState<TEvent>({
+        name: "",
+        description: "",
+        owner: localStorage.getItem("userId"),
+    });
 
     const dispatch = useAppDispatch();
 
@@ -58,6 +62,7 @@ const EditEvent = (props: PropsType) => {
                 _id: data._id,
                 name: data.name,
                 description: data.description,
+                owner: localStorage.getItem("userId"),
             })
         );
         // setData({
