@@ -112,7 +112,7 @@ router.post("/participants/delete/:id", verifyToken, async (request, response) =
     }
 })
 
-router.post("/participants/update/form/:id", async (request, response) => {
+router.post("/#/participants/update/form/:id", async (request, response) => {
     
     console.log("Try to edit", request.body);
 
