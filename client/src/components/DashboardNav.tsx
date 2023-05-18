@@ -1,4 +1,5 @@
 import React, { ReactNode } from "react";
+import { Link } from "react-router-dom";
 import {
     IconButton,
     Avatar,
@@ -9,7 +10,7 @@ import {
     VStack,
     Icon,
     useColorModeValue,
-    Link,
+    // Link,
     Drawer,
     DrawerContent,
     Text,
@@ -35,17 +36,25 @@ import {
 } from "react-icons/fi";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
+import { logoutAsync } from "../features/auth/authSlice";
+import { useAppDispatch } from "../app/hooks";
 
 interface LinkItemProps {
     name: string;
     icon: IconType;
+    to: string;
 }
 const LinkItems: Array<LinkItemProps> = [
-    { name: "Home", icon: FiHome },
-    { name: "Trending", icon: FiTrendingUp },
-    { name: "Explore", icon: FiCompass },
-    { name: "Favourites", icon: FiStar },
-    { name: "Settings", icon: FiSettings },
+    {
+        name: "Events",
+        icon: FiHome,
+        to: "/",
+    },
+    {
+        name: "Participants",
+        icon: FiTrendingUp,
+        to: "/participants/" + localStorage.getItem("eventId"),
+    },
 ];
 
 export default function SidebarWithHeader({
@@ -54,6 +63,7 @@ export default function SidebarWithHeader({
     children: ReactNode;
 }) {
     const { isOpen, onOpen, onClose } = useDisclosure();
+
     return (
         <Box minH="100vh" bg={useColorModeValue("gray.100", "gray.900")}>
             <SidebarContent
@@ -105,7 +115,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
                 justifyContent="space-between"
             >
                 <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-                    Logo
+                    Collabtime
                 </Text>
                 <CloseButton
                     display={{ base: "flex", md: "none" }}
@@ -113,7 +123,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
                 />
             </Flex>
             {LinkItems.map((link) => (
-                <NavItem key={link.name} icon={link.icon}>
+                <NavItem key={link.name} to={link.to} icon={link.icon}>
                     {link.name}
                 </NavItem>
             ))}
@@ -123,14 +133,15 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
 
 interface NavItemProps extends FlexProps {
     icon: IconType;
+    to: string;
     children: ReactText;
 }
-const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
+const NavItem = ({ icon, to, children, ...rest }: NavItemProps) => {
     return (
         <Link
-            href="#"
+            to={to}
             style={{ textDecoration: "none" }}
-            _focus={{ boxShadow: "none" }}
+            // _focus={{ boxShadow: "none" }}
         >
             <Flex
                 align="center"
@@ -140,7 +151,7 @@ const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
                 role="group"
                 cursor="pointer"
                 _hover={{
-                    bg: "cyan.400",
+                    bg: "blue.400",
                     color: "white",
                 }}
                 {...rest}
@@ -165,6 +176,11 @@ interface MobileProps extends FlexProps {
     onOpen: () => void;
 }
 const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+    const dispatch = useAppDispatch();
+
+    const handleLogout = async () => {
+        dispatch(logoutAsync());
+    };
     return (
         <ChakraProvider>
             <Flex
@@ -243,7 +259,9 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                                 <MenuItem>Settings</MenuItem>
                                 <MenuItem>Billing</MenuItem>
                                 <MenuDivider />
-                                <MenuItem>Sign out</MenuItem>
+                                <MenuItem onClick={handleLogout}>
+                                    Sign out
+                                </MenuItem>
                             </MenuList>
                         </Menu>
                     </Flex>

@@ -53,8 +53,6 @@ router.post("/events/update/:id", verifyToken, async (request, response) => {
 })
 
 router.post("/events/delete/:id", verifyToken, async (request, response) => {
-    
-    
     if (request.user) {
         console.log("Try to delete", request.params.id);
 
@@ -65,10 +63,7 @@ router.post("/events/delete/:id", verifyToken, async (request, response) => {
         } catch (error) {
             response.status(500).send(error);
         }
-        
-
     } else {
-        
         response.status(403).send({message: "Not Authorized"});
     }
 })

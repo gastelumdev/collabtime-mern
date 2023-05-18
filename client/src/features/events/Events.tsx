@@ -137,7 +137,7 @@ const Events = () => {
     if (redirect && localStorage.getItem("eventId"))
         return (
             <Navigate
-                to={`/dashboard/${localStorage.getItem("eventId")}/`}
+                to={`/participants/${localStorage.getItem("eventId")}/`}
                 replace
             />
         );
@@ -209,7 +209,7 @@ const Events = () => {
                     colorScheme="blue"
                     onClick={onOpen}
                 >
-                    Create user
+                    Create event
                 </Button>
                 <Heading>
                     <Center pb={"50px"}>Events</Center>

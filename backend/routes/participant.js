@@ -37,4 +37,34 @@ router.post("/participants", verifyToken, async (request, response) => {
     }
 })
 
+router.post("/participants/update/:id", verifyToken, async (request, response) => {
+    if (request.user) {
+        console.log("Try to edit", request.params.id);
+
+        try {
+            const res = await participantModel.findByIdAndUpdate(request.params.id, request.body)
+            console.log("Update res:", res);
+            response.send(res);
+        } catch (error) {
+            response.status(500).send(error);
+        }
+    }
+})
+
+router.post("/participants/delete/:id", verifyToken, async (request, response) => {
+    if (request.user) {
+        console.log("Try to delete", request.params.id);
+
+        try {
+            const res = await participantModel.findByIdAndDelete(request.params.id);
+            console.log("Delete res:", res)
+            response.send(res);
+        } catch (error) {
+            response.status(500).send(error);
+        }
+    } else {
+        response.status(403).send({message: "Not Authorized"});
+    }
+})
+
 module.exports = router;

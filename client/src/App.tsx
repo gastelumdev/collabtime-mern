@@ -14,6 +14,8 @@ import {
 } from "./features/auth/authSlice";
 import { useEffect, useState } from "react";
 import Dashboard from "./components/Dashboard";
+import Participants from "./features/participants/Participants";
+import Register from "./features/auth/Register";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(
@@ -30,10 +32,14 @@ function App() {
         <Router>
             <Routes>
                 <Route element={<PrivateRoutes />}>
+                    <Route
+                        path="/participants/:eventId"
+                        element={<Participants />}
+                    />
                     <Route path="/" element={<Events />} />
-                    <Route path="/dashboard/:eventId" element={<Dashboard />} />
                 </Route>
                 <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
                 {/* <Route path="/register" element={<Register />} /> */}
             </Routes>
         </Router>

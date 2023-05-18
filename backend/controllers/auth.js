@@ -6,15 +6,16 @@ exports.signup = async (req, res) => {
   const user = new User({
     username: req.body.username,
     email: req.body.email,
-    role: req.body.role,
+    role: "admin",
     isAuthenticated: true,
     password: bcrypt.hashSync(req.body.password, 8)
   });
 
-  const request = await user.save();
+  
 
   try {
-    res.send({message: "User registered successfully."});
+    const request = await user.save();
+    res.send({message: "User registered successfully.", successful: true});
   } catch (error) {
     res.send(error);
   }
@@ -59,7 +60,8 @@ exports.signin = async (req, res) => {
             const response = await User.updateOne({_id: user._id}, {isAuthenticated: true});
           }
 
-          res.status(200)
+          try {
+            res.status(200)
             .send({
               user: {
                 id: user._id,
@@ -70,6 +72,14 @@ exports.signin = async (req, res) => {
               message: "Login successfull",
               accessToken: token,
             });
+          } catch (error) {
+            console.log(error);
+            res.status(500)
+              .send({
+                message: "Error: " + error
+              });
+        }
+          
         }
       
     } catch (error) {

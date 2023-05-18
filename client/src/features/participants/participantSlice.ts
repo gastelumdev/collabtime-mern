@@ -44,6 +44,33 @@ export const createParticipantAsync = createAsyncThunk(
     }
 )
 
+export const updateParticipantAsync = createAsyncThunk(
+    'participants/update',
+    async (participant: TParticipant) => {
+        try {
+            const response = await updateParticipant(participant);
+            return response.data;
+        }  catch (err) {
+            const errors = err as Error | AxiosError;
+            console.log("Update participant: ", errors);
+        }
+    }
+)
+
+export const deleteParticipantAsync = createAsyncThunk(
+    'participants/delete',
+    async (id: string) => {
+        try {
+            console.log(id)
+            const response = await deleteParticipant(id);
+            return response.data;
+        } catch (err) {
+            const errors = err as Error | AxiosError;
+            console.log("Delete participant: ", errors);
+        }
+    }
+)
+
 
 export const participantsSlice = createSlice({
     name: 'participants',

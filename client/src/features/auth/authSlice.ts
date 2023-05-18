@@ -1,8 +1,8 @@
 import { AxiosError } from 'axios';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { getSession, login, logout } from './authAPI';
-import { TSignin } from '../types/auth';
+import { getSession, login, logout, register } from './authAPI';
+import { TSignin, TUser } from '../types/auth';
 import { TypedUseSelectorHook } from 'react-redux';
 import { ErrorResponse } from '@remix-run/router';
 
@@ -36,6 +36,28 @@ export const loginAsync = createAsyncThunk(
         }
     }
 );
+
+export const registerAsync = createAsyncThunk(
+    'auth/register',
+    async (user: TUser, thunkAPI) => {
+        try {
+            const regResponse: any = await register(user);
+            if (regResponse.data.successful) {
+                const response = await login({email: user.email, password: user.password});
+                localStorage.setItem('token', response.data.accessToken);
+                localStorage.setItem('userId', response.data.user.id);
+                console.log(response.data);
+                return response.data;
+            }
+            
+            
+        } catch (err) {
+            const errors = err as Error | AxiosError;
+            console.log(errors);
+            return thunkAPI.rejectWithValue({error: errors.message});
+        }
+    }
+)
 
 export const getSessionAsync = createAsyncThunk(
     'auth/session',
@@ -89,6 +111,17 @@ export const authSlice = createSlice({
             state.isAuthenticated = action.payload.user.isAuthenticated;
         })
         .addCase(loginAsync.rejected, (state) => {
+            state.status = 'failed';
+        })
+        .addCase(registerAsync.pending, (state) => {
+            state.status = 'loading';
+        })
+        .addCase(registerAsync.fulfilled, (state, action) => {
+            state.status = 'idle';
+            state.accessToken = action.payload.accessToken;
+            state.isAuthenticated = action.payload.user.isAuthenticated;
+        })
+        .addCase(registerAsync.rejected, (state) => {
             state.status = 'failed';
         })
         .addCase(getSessionAsync.pending, (state) => {
