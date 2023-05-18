@@ -15,10 +15,11 @@ import {
     Input,
     Stack,
     useDisclosure,
+    Text,
 } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import DataTable, { TableColumn, TableRow } from "react-data-table-component";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
     createParticipantAsync,
     deleteParticipantAsync,
@@ -34,7 +35,7 @@ const Dashboard = () => {
     const [rerender, setRerender] = useState(true);
     const [data, setData] = useState<TParticipant>({
         name: "",
-        role: "",
+        email: "",
         event: localStorage.getItem("eventId"),
     });
     const [isCreate, setIsCreate] = useState(true);
@@ -61,7 +62,7 @@ const Dashboard = () => {
         dispatch(createParticipantAsync(data));
         setData({
             name: "",
-            role: "",
+            email: "",
             event: localStorage.getItem("eventId"),
         });
         dispatch(getParticipantsAsync(localStorage.getItem("eventId")));
@@ -81,7 +82,7 @@ const Dashboard = () => {
         setData({
             _id: participant._id,
             name: participant.name,
-            role: participant.role,
+            email: participant.email,
             event: localStorage.getItem("eventId"),
         });
     };
@@ -104,7 +105,7 @@ const Dashboard = () => {
     type DataRow = {
         _id: string;
         name: string;
-        role: string;
+        email: string;
     };
 
     const columns: any = [
@@ -114,8 +115,8 @@ const Dashboard = () => {
             sortable: true,
         },
         {
-            name: "Role",
-            selector: (row: { role: any }) => row.role,
+            name: "Email",
+            selector: (row: { email: any }) => row.email,
             sortable: true,
         },
         {
@@ -138,6 +139,22 @@ const Dashboard = () => {
                     </Button>
                 </>
             ),
+        },
+        {
+            cell: (row: TParticipant) =>
+                row.status === "Pending" ? (
+                    <>
+                        <Text>Pending</Text>
+                    </>
+                ) : row.status === "Submitted" ? (
+                    <>
+                        <Link to={"/participants/form/" + row._id}>Verify</Link>
+                    </>
+                ) : (
+                    <>
+                        <Text>Verified</Text>
+                    </>
+                ),
         },
     ];
 
@@ -170,12 +187,12 @@ const Dashboard = () => {
                             </Box>
 
                             <Box>
-                                <FormLabel htmlFor="role">Role</FormLabel>
+                                <FormLabel htmlFor="email">Email</FormLabel>
                                 <Input
                                     // ref={firstField}
-                                    id="role"
-                                    name="role"
-                                    placeholder="Please enter participant role"
+                                    id="email"
+                                    name="email"
+                                    placeholder="Please enter participant email"
                                     onChange={handleChange}
                                 />
                             </Box>
@@ -228,14 +245,14 @@ const Dashboard = () => {
                             </Box>
 
                             <Box>
-                                <FormLabel htmlFor="role">Role</FormLabel>
+                                <FormLabel htmlFor="email">Email</FormLabel>
                                 <Input
                                     // ref={firstField}
-                                    id="role"
-                                    name="role"
-                                    placeholder="Please enter participant role"
+                                    id="email"
+                                    name="email"
+                                    placeholder="Please enter participant email"
                                     onChange={handleChange}
-                                    value={data.role}
+                                    value={data.email}
                                 />
                             </Box>
                         </Stack>

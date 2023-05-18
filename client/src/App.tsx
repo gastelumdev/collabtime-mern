@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import Dashboard from "./components/Dashboard";
 import Participants from "./features/participants/Participants";
 import Register from "./features/auth/Register";
+import ParticipantForm from "./features/participants/ParticipantForm";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(
@@ -40,6 +41,10 @@ function App() {
                 </Route>
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route
+                    path="/participants/form/:id"
+                    element={<ParticipantForm />}
+                />
                 {/* <Route path="/register" element={<Register />} /> */}
             </Routes>
         </Router>

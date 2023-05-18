@@ -28,8 +28,8 @@ const columns = [
         sortable: true,
     },
     {
-        name: "Role",
-        selector: (row: { role: any }) => row.role,
+        name: "Email",
+        selector: (row: { email: any }) => row.email,
         sortable: true,
     },
 ];
