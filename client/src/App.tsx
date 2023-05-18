@@ -2,7 +2,7 @@ import Events from "./features/events/Events";
 import { Login } from "./features/auth/Login";
 import PrivateRoutes from "./components/PrivateRoutes";
 import {
-    BrowserRouter as Router,
+    HashRouter as Router,
     Routes,
     Route,
     Navigate,
