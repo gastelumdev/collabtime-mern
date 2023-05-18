@@ -48,7 +48,7 @@ export default function Nav({ logout }: TAuth) {
                     alignItems={"center"}
                     justifyContent={"space-between"}
                 >
-                    <Box>Logo</Box>
+                    <Box>Collabtime</Box>
 
                     <Flex alignItems={"center"}>
                         <Stack direction={"row"} spacing={7}>

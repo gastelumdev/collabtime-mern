@@ -13,7 +13,7 @@ interface TParticipantState {
 const initialState: TParticipantState = {
     participants: [],
     createdParticipant: {},
-    status: 'loading',
+    status: 'idle',
 }
 
 export const getParticipantsAsync = createAsyncThunk(
@@ -105,5 +105,6 @@ export const participantsSlice = createSlice({
 
 export const selectParticipants = (state: RootState) => state.participants.participants;
 export const selectCreatedParticipant = (state: RootState) => state.participants.createdParticipant;
+export const selectStatus = (state: RootState) => state.participants.status;
 
 export default participantsSlice.reducer;

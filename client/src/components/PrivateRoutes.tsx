@@ -4,11 +4,17 @@ import { useAppSelector, useAppDispatch } from "../app/hooks";
 import {
     getSessionAsync,
     selectIsAuthenticated,
-    selectStatus,
+    selectStatus as selectAuthStatus,
 } from "../features/auth/authSlice";
+import { Spinner } from "@chakra-ui/react";
+import {
+    getParticipantsAsync,
+    selectStatus as selectParticipantStatus,
+} from "../features/participants/participantSlice";
 
 const PrivateRoutes = () => {
-    const status = useAppSelector(selectStatus);
+    const status = useAppSelector(selectAuthStatus);
+    const participantStatus = useAppSelector(selectParticipantStatus);
     const [isAuthenticated, setIsAuthenticated] = useState(
         useAppSelector(selectIsAuthenticated)
     );
@@ -19,14 +25,16 @@ const PrivateRoutes = () => {
     }, []);
 
     console.log("isAuthenticated", isAuthenticated);
-    if (status === "loading") {
-        return null;
-    }
+    console.log(participantStatus);
 
-    if (isAuthenticated && localStorage.getItem("token")) {
-        return <Outlet />;
+    if (status === "loading") {
+        return <Spinner />;
+    } else {
+        if (isAuthenticated && localStorage.getItem("token")) {
+            return <Outlet />;
+        }
+        return <Navigate to="/login" replace />;
     }
-    return <Navigate to="/login" replace />;
 };
 
 export default PrivateRoutes;
