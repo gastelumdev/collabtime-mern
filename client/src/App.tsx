@@ -2,7 +2,7 @@ import Events from "./features/events/Events";
 import { Login } from "./features/auth/Login";
 import PrivateRoutes from "./components/PrivateRoutes";
 import {
-    HashRouter as Router,
+    BrowserRouter as Router,
     Routes,
     Route,
     Navigate,
@@ -42,7 +42,7 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
                 <Route
-                    path="/participants/form/:id"
+                    path="/participants/form/:id/"
                     element={<ParticipantForm />}
                 />
                 {/* <Route path="/register" element={<Register />} /> */}
