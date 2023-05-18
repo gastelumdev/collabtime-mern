@@ -34,6 +34,7 @@ export const getParticipantsAsync = createAsyncThunk(
 export const createParticipantAsync = createAsyncThunk(
     'participants/create',
     async (participant: TParticipant) => {
+        console.log(participant)
         try {
             const response = await createParticipant(participant);
             return response.data;

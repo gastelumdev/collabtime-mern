@@ -37,13 +37,14 @@ const Dashboard = () => {
         role: "",
         event: localStorage.getItem("eventId"),
     });
+    const [isCreate, setIsCreate] = useState(true);
     const params = useParams();
 
     const dispatch = useAppDispatch();
     const {
-        isOpen: isDeleteOpen,
-        onOpen: onDeleteOpen,
-        onClose: onDeleteClose,
+        isOpen: isCreateOpen,
+        onOpen: onCreateOpen,
+        onClose: onCreateClose,
     } = useDisclosure();
     const {
         isOpen: isUpdateOpen,
@@ -56,6 +57,7 @@ const Dashboard = () => {
     }, [dispatch, rerender]);
 
     const createParticipant = async () => {
+        console.log(data);
         dispatch(createParticipantAsync(data));
         setData({
             name: "",
@@ -64,7 +66,7 @@ const Dashboard = () => {
         });
         dispatch(getParticipantsAsync(localStorage.getItem("eventId")));
         setRerender(!rerender);
-        onDeleteClose();
+        onCreateClose();
     };
 
     const handleDelete = async (participantId: string) => {
@@ -74,6 +76,7 @@ const Dashboard = () => {
     };
 
     const handleUpdateButton = async (participant: TParticipant) => {
+        setIsCreate(true);
         onUpdateOpen();
         setData({
             _id: participant._id,
@@ -140,12 +143,11 @@ const Dashboard = () => {
 
     return (
         <ChakraProvider>
-            {/**************** DELETE DRAWER ********************************/}
             <Drawer
-                isOpen={isDeleteOpen}
+                isOpen={isCreateOpen}
                 placement="right"
                 // initialFocusRef={firstField}
-                onClose={onDeleteClose}
+                onClose={onCreateClose}
             >
                 <DrawerOverlay />
                 <DrawerContent>
@@ -184,7 +186,7 @@ const Dashboard = () => {
                         <Button
                             variant="outline"
                             mr={3}
-                            onClick={onDeleteClose}
+                            onClick={onCreateClose}
                         >
                             Cancel
                         </Button>
@@ -192,12 +194,12 @@ const Dashboard = () => {
                             colorScheme="blue"
                             onClick={() => createParticipant()}
                         >
-                            Submit
+                            Create
                         </Button>
                     </DrawerFooter>
                 </DrawerContent>
             </Drawer>
-            {/**************** UPDATE DRAWER ********************************/}
+
             <Drawer
                 isOpen={isUpdateOpen}
                 placement="right"
@@ -251,7 +253,7 @@ const Dashboard = () => {
                             colorScheme="blue"
                             onClick={() => handleUpdate()}
                         >
-                            Submit
+                            Update
                         </Button>
                     </DrawerFooter>
                 </DrawerContent>
@@ -269,7 +271,7 @@ const Dashboard = () => {
                     <Button
                         leftIcon={<AddIcon />}
                         colorScheme="blue"
-                        onClick={onUpdateOpen}
+                        onClick={onCreateOpen}
                     >
                         Envite Participant
                     </Button>
