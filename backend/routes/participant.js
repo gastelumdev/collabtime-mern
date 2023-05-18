@@ -52,7 +52,7 @@ router.post("/participants", verifyToken, async (request, response) => {
                 to: request.body.email,   // list of receivers
                 subject: 'Welcome to AFOB',
                 // text: 'That was easy!',
-                html: '<h1>AFOB Information Request Form</h1><p>Please follow the link below to submit your participation information.</p><a href="'+ process.env.CORS_URL +'/participants/form/'+ participant._id +'">Participant Form</a>',
+                html: '<h1>AFOB Information Request Form</h1><p>Please follow the link below to submit your participation information.</p><a href="'+ process.env.CORS_URL +'/#/participants/form/'+ participant._id +'">Participant Form</a>',
             };
     
             transporter.sendMail(mailData, function (err, info) {
@@ -112,7 +112,7 @@ router.post("/participants/delete/:id", verifyToken, async (request, response) =
     }
 })
 
-router.post("/#/participants/update/form/:id", async (request, response) => {
+router.post("/participants/update/form/:id", async (request, response) => {
     
     console.log("Try to edit", request.body);
 
