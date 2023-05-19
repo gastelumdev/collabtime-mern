@@ -16,6 +16,7 @@ import {
     Stack,
     useDisclosure,
     Text,
+    Badge,
 } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import DataTable, { TableColumn, TableRow } from "react-data-table-component";
@@ -144,15 +145,23 @@ const Dashboard = () => {
             cell: (row: TParticipant) =>
                 row.status === "Pending" ? (
                     <>
-                        <Text>Pending</Text>
+                        <Badge colorScheme="blue">
+                            <Text>Pending</Text>
+                        </Badge>
                     </>
                 ) : row.status === "Submitted" ? (
                     <>
-                        <Link to={"/participants/form/" + row._id}>Verify</Link>
+                        <Badge colorScheme="purple">
+                            <Link to={"/participants/form/" + row._id}>
+                                Verify
+                            </Link>
+                        </Badge>
                     </>
                 ) : (
                     <>
-                        <Text>Verified</Text>
+                        <Badge colorScheme="green">
+                            <Text>Verified</Text>
+                        </Badge>
                     </>
                 ),
         },
