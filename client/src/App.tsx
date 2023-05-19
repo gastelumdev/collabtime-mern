@@ -45,7 +45,7 @@ function App() {
                     path="/participants/form/:id/"
                     element={<ParticipantForm />}
                 />
-                {/* <Route path="/register" element={<Register />} /> */}
+                {/* <Route path="/register" element={<Registe />} /> */}
             </Routes>
         </Router>
     );
