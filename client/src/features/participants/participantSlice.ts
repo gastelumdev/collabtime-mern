@@ -11,6 +11,7 @@ interface TParticipantState {
     createdParticipant: TParticipant | {};
     participant: TParticipant,
     status: 'idle' | 'loading' | 'failed'; 
+    err: string | null;
 }
 
 const initialState: TParticipantState = {
@@ -18,6 +19,7 @@ const initialState: TParticipantState = {
     createdParticipant: {},
     participant: {name: '', email: ''},
     status: 'idle',
+    err: null,
 }
 
 export const getParticipantsAsync = createAsyncThunk(
@@ -37,7 +39,7 @@ export const getParticipantsAsync = createAsyncThunk(
 
 export const createParticipantAsync = createAsyncThunk(
     'participants/create',
-    async (participant: TParticipant) => {
+    async (participant: TParticipant, {rejectWithValue}) => {
         console.log(participant)
         try {
             participant.status = "Pending";
@@ -46,6 +48,7 @@ export const createParticipantAsync = createAsyncThunk(
         } catch (err) {
             const errors = err as Error | AxiosError;
             console.log("Create participant: ", errors);
+            return rejectWithValue({message: "Already exists."});
         }
     }
 )
@@ -98,7 +101,7 @@ export const deleteParticipantAsync = createAsyncThunk(
 
 export const updateParticipantFormAsync = createAsyncThunk(
     'participants/updateForm',
-    async (participant: TParticipant) => {
+    async (participant: TParticipant, {rejectWithValue}) => {
         
         console.log(localStorage.getItem("token"))
         participant.status = (localStorage.getItem("token")) ? "Verified": "Submitted" ;
@@ -136,10 +139,14 @@ export const participantsSlice = createSlice({
         })
         .addCase(createParticipantAsync.fulfilled, (state, action) => {
             state.status = 'idle';
+            console.log(action.payload);
             state.createdParticipant = action.payload;
+            
         })
-        .addCase(createParticipantAsync.rejected, (state) => {
+        .addCase(createParticipantAsync.rejected, (state, action) => {
             state.status = 'failed';
+            console.log(action.payload);
+            state.err = "Already exists";
         })
         .addCase(getParticipantAsync.pending, (state) => {
             state.status = 'loading';
@@ -158,5 +165,6 @@ export const selectParticipants = (state: RootState) => state.participants.parti
 export const selectCreatedParticipant = (state: RootState) => state.participants.createdParticipant;
 export const selectParticipant = (state: RootState) => state.participants.participant;
 export const selectStatus = (state: RootState) => state.participants.status;
+export const selectError = (state: RootState) => state.participants.err;
 
 export default participantsSlice.reducer;

@@ -17,6 +17,8 @@ import {
     useDisclosure,
     Text,
     Badge,
+    Toast,
+    useToast,
 } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import DataTable, { TableColumn, TableRow } from "react-data-table-component";
@@ -25,6 +27,8 @@ import {
     createParticipantAsync,
     deleteParticipantAsync,
     getParticipantsAsync,
+    selectCreatedParticipant,
+    selectError,
     selectParticipants,
     updateParticipantAsync,
 } from "./participantSlice";
@@ -33,6 +37,10 @@ import { AddIcon } from "@chakra-ui/icons";
 
 const Dashboard = () => {
     const participants = useAppSelector(selectParticipants);
+    const createdParticipant = useAppSelector(selectCreatedParticipant);
+    const toast = useToast();
+    const error = useAppSelector(selectError);
+
     const [rerender, setRerender] = useState(true);
     const [data, setData] = useState<TParticipant>({
         name: "",
@@ -69,6 +77,18 @@ const Dashboard = () => {
         dispatch(getParticipantsAsync(localStorage.getItem("eventId")));
         setRerender(!rerender);
         onCreateClose();
+
+        console.log(error);
+        if (error) {
+            return toast({
+                position: "top",
+                title: "Participant already exists",
+                description: "The participant with that email already exists",
+                status: "warning",
+                duration: 3000,
+                isClosable: true,
+            });
+        }
     };
 
     const handleDelete = async (participantId: string) => {
@@ -102,6 +122,8 @@ const Dashboard = () => {
             [name]: value,
         });
     };
+
+    const handleError = () => {};
 
     type DataRow = {
         _id: string;
