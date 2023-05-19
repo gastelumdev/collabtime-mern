@@ -288,6 +288,8 @@ const Dashboard = () => {
                     <Button
                         leftIcon={<AddIcon />}
                         colorScheme="blue"
+                        size="sm"
+                        mb="30px"
                         onClick={onCreateOpen}
                     >
                         Envite Participant

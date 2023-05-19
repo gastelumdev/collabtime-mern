@@ -84,7 +84,7 @@ const Events = () => {
         setData({
             name: "",
             description: "",
-            owner: "",
+            owner: localStorage.getItem("userId"),
         });
         dispatch(getEventsAsync());
         setRerender(!rerender);
@@ -208,6 +208,7 @@ const Events = () => {
                     leftIcon={<AddIcon />}
                     colorScheme="blue"
                     onClick={onOpen}
+                    mb={"50px"}
                 >
                     Create event
                 </Button>
@@ -219,31 +220,32 @@ const Events = () => {
                     templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
                     // alignContent={"center"}
                 >
-                    {events.map((event: TEvent, index: any) => (
-                        <Card key={index}>
-                            <CardHeader>
-                                <Heading size="md">{event.name}</Heading>
-                            </CardHeader>
-                            <CardBody>
-                                <Text>{event.description}</Text>
-                            </CardBody>
-                            <CardFooter>
-                                <HStack>
-                                    <Button
-                                        colorScheme="blue"
-                                        variant="ghost"
-                                        size="xs"
-                                        onClick={() =>
-                                            handleSetEventId(event._id)
-                                        }
-                                    >
-                                        View
-                                    </Button>
-                                    <EditEvent
-                                        _event={event}
-                                        onRerender={onRerender}
-                                    />
-                                    {/* <Button
+                    {events.length > 0
+                        ? events.map((event: TEvent, index: any) => (
+                              <Card key={index}>
+                                  <CardHeader>
+                                      <Heading size="md">{event.name}</Heading>
+                                  </CardHeader>
+                                  <CardBody>
+                                      <Text>{event.description}</Text>
+                                  </CardBody>
+                                  <CardFooter>
+                                      <HStack>
+                                          <Button
+                                              colorScheme="blue"
+                                              variant="ghost"
+                                              size="xs"
+                                              onClick={() =>
+                                                  handleSetEventId(event._id)
+                                              }
+                                          >
+                                              View
+                                          </Button>
+                                          <EditEvent
+                                              _event={event}
+                                              onRerender={onRerender}
+                                          />
+                                          {/* <Button
                                         colorScheme="teal"
                                         variant="ghost"
                                         size="xs"
@@ -253,21 +255,27 @@ const Events = () => {
                                     >
                                         Edit
                                     </Button> */}
-                                    <Button
-                                        colorScheme="red"
-                                        variant="ghost"
-                                        size="xs"
-                                        onClick={() =>
-                                            handleDeleteEvent(event._id)
-                                        }
-                                    >
-                                        Delete
-                                    </Button>
-                                </HStack>
-                            </CardFooter>
-                        </Card>
-                    ))}
+                                          <Button
+                                              colorScheme="red"
+                                              variant="ghost"
+                                              size="xs"
+                                              onClick={() =>
+                                                  handleDeleteEvent(event._id)
+                                              }
+                                          >
+                                              Delete
+                                          </Button>
+                                      </HStack>
+                                  </CardFooter>
+                              </Card>
+                          ))
+                        : null}
                 </SimpleGrid>
+                {events.length === 0 ? (
+                    <Center>
+                        Click the Create event button to create an event.
+                    </Center>
+                ) : null}
             </Container>
         </div>
     );

@@ -7,6 +7,7 @@ export const getEvents = () => {
 }
 
 export const createEvent = (event: TEvent) => {
+    console.log(event)
     return axios.post(API_URL + "/events", event, {headers: {"Content-Type": "application/json", Authorization: "JWT " + localStorage.getItem("token"),}});
 }
 
