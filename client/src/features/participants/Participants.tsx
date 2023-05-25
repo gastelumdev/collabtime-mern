@@ -323,7 +323,7 @@ const Dashboard = () => {
                         mb="30px"
                         onClick={onCreateOpen}
                     >
-                        Envite Participant
+                        Invite Participant
                     </Button>
                     <DataTable
                         columns={columns}
