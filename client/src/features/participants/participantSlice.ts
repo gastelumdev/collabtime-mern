@@ -104,7 +104,14 @@ export const updateParticipantFormAsync = createAsyncThunk(
     async (participant: TParticipant, {rejectWithValue}) => {
         
         console.log(localStorage.getItem("token"))
-        participant.status = (localStorage.getItem("token")) ? "Verified": "Submitted" ;
+
+        if (localStorage.getItem("token")) {
+            participant.status = "Verified";
+        } else {
+            participant.status = "Submitted";
+            localStorage.clear();
+        }
+
         console.log(participant);
         try {
             const response = await updateParticipantForm(participant);
