@@ -201,7 +201,7 @@ const Dashboard = () => {
                 <DrawerContent>
                     <DrawerCloseButton />
                     <DrawerHeader borderBottomWidth="1px">
-                        Envite Participant
+                        Invite Participant
                     </DrawerHeader>
 
                     <DrawerBody>
