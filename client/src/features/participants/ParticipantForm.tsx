@@ -357,9 +357,9 @@ const ParticipantForm = () => {
                                 variant="solid"
                                 onClick={() => {
                                     toast({
-                                        title: "Account created.",
+                                        title: "Success!.",
                                         description:
-                                            "We've created your account for you.",
+                                            "Your form has been submitted.",
                                         status: "success",
                                         duration: 3000,
                                         isClosable: true,
