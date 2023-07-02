@@ -136,7 +136,7 @@ const ParticipantForm = () => {
                             fontWeight="normal"
                             mb="2%"
                         >
-                            Participation Form
+                            Participant Form
                         </Heading>
                         <FormControl mr="5%">
                             <FormLabel
