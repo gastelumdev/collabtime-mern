@@ -19,6 +19,9 @@ import {
     Badge,
     Toast,
     useToast,
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
 } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import DataTable, { TableColumn, TableRow } from "react-data-table-component";
@@ -33,7 +36,9 @@ import {
     updateParticipantAsync,
 } from "./participantSlice";
 import { TParticipant } from "../types/participant";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import NavBar from "../../components/NavBar";
+import { logoutAsync } from "../auth/authSlice";
 
 const Dashboard = () => {
     const participants = useAppSelector(selectParticipants);
@@ -150,6 +155,10 @@ const Dashboard = () => {
             ...data,
             [name]: value,
         });
+    };
+
+    const handleLogout = async () => {
+        dispatch(logoutAsync());
     };
 
     const handleError = () => {};
@@ -455,6 +464,7 @@ const Dashboard = () => {
 
     return (
         <ChakraProvider>
+            <NavBar logout={handleLogout} />
             <Drawer
                 isOpen={isCreateOpen}
                 placement="right"
@@ -570,36 +580,56 @@ const Dashboard = () => {
                     </DrawerFooter>
                 </DrawerContent>
             </Drawer>
-            <SidebarWithHeader>
-                <h1>{params.id}</h1>
-                <Box
-                    // maxW={{ base: "full", md: "275px" }}
-                    bg="white"
-                    w={"full"}
-                    borderWidth="1px"
-                    borderRadius="lg"
-                    p={5}
+            {/* <h1>{params.id}</h1> */}
+            <Box
+                bg="white"
+                w={"full"}
+                borderWidth="1px"
+                borderRadius="lg"
+                p={5}
+                mb={2}
+            >
+                <Breadcrumb
+                    spacing="8px"
+                    separator={<ChevronRightIcon color="gray.500" />}
                 >
-                    <Button
-                        leftIcon={<AddIcon />}
-                        colorScheme="blue"
-                        size="sm"
-                        mb="30px"
-                        onClick={onCreateOpen}
-                    >
-                        Invite Participant
-                    </Button>
+                    <BreadcrumbItem>
+                        <BreadcrumbLink href={`/#/`}>Events</BreadcrumbLink>
+                    </BreadcrumbItem>
 
-                    <ExportCSV />
+                    <BreadcrumbItem isCurrentPage>
+                        <BreadcrumbLink href="#">Participants</BreadcrumbLink>
+                    </BreadcrumbItem>
+                </Breadcrumb>
+            </Box>
+            <Box
+                // maxW={{ base: "full", md: "275px" }}
+                bg="white"
+                w={"full"}
+                borderWidth="1px"
+                borderRadius="lg"
+                p={5}
+            >
+                <Button
+                    leftIcon={<AddIcon />}
+                    colorScheme="blue"
+                    size="sm"
+                    mb="30px"
+                    onClick={onCreateOpen}
+                >
+                    Invite Participant
+                </Button>
 
-                    {/* <DataTable
+                {/* Datatable */}
+                <ExportCSV />
+
+                {/* <DataTable
                         columns={columns}
                         data={participants}
                         selectableRows
                         pagination
                     /> */}
-                </Box>
-            </SidebarWithHeader>
+            </Box>
         </ChakraProvider>
     );
 };
