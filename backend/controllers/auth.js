@@ -53,7 +53,7 @@ exports.signin = async (req, res) => {
           var token = jwt.sign({
             id: user.id
           }, process.env.API_SECRET || "myapisecret", {
-            expiresIn: 86400
+            expiresIn: '60s'
           });
 
           if (token) {
@@ -115,6 +115,7 @@ exports.getSession = async (req, res) => {
 
   try {
     if (!user) {
+      console.log("NO USER!")
       res.status(401).send()
     } else {
       res.send(user.isAuthenticated);
