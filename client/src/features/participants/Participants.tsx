@@ -223,7 +223,7 @@ const Dashboard = () => {
 
         return (
             <DataTable
-                title="Movie List"
+                title="Participants"
                 columns={columns}
                 data={participants}
                 actions={actionsMemo}
