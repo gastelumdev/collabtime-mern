@@ -53,7 +53,7 @@ exports.signin = async (req, res) => {
           var token = jwt.sign({
             id: user.id
           }, process.env.API_SECRET || "myapisecret", {
-            expiresIn: '60s'
+            expiresIn: '2592000s'
           });
 
           if (token) {
