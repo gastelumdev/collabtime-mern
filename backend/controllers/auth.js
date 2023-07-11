@@ -33,7 +33,7 @@ exports.signin = async (req, res) => {
             console.log("Not user")
             res.status(404)
               .send({
-                message: "User Not found."
+                message: "Login failed. Try again."
               });
         } else {
             //comparing passwords
@@ -46,39 +46,41 @@ exports.signin = async (req, res) => {
             res.status(401)
               .send({
                 accessToken: null,
-                message: "Invalid Password!"
+                message: "Login failed. Try again."
               });
-          }
-          //signing token with user id
-          var token = jwt.sign({
-            id: user.id
-          }, process.env.API_SECRET || "myapisecret", {
-            expiresIn: '2592000s'
-          });
-
-          if (token) {
-            const response = await User.updateOne({_id: user._id}, {isAuthenticated: true});
-          }
-
-          try {
-            res.status(200)
-            .send({
-              user: {
-                id: user._id,
-                email: user.email,
-                username: user.username,
-                isAuthenticated: true,
-              },
-              message: "Login successfull",
-              accessToken: token,
-            });
-          } catch (error) {
-            console.log(error);
-            res.status(500)
-              .send({
-                message: "Error: " + error
+          } else {
+              //signing token with user id
+              var token = jwt.sign({
+                id: user.id
+              }, process.env.API_SECRET || "myapisecret", {
+                expiresIn: '2592000s'
               });
-        }
+
+              if (token) {
+                const response = await User.updateOne({_id: user._id}, {isAuthenticated: true});
+              }
+
+              try {
+                res.status(200)
+                .send({
+                  user: {
+                    id: user._id,
+                    email: user.email,
+                    username: user.username,
+                    isAuthenticated: true,
+                  },
+                  message: "Login successfull",
+                  accessToken: token,
+                });
+              } catch (error) {
+                console.log("500 Error: ", error);
+                res.status(500)
+                  .send({
+                    message: "Error: " + error
+                  });
+            }
+          }
+          
           
         }
       

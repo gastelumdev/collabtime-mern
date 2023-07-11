@@ -7,6 +7,7 @@ import {
     // selectCSRF,
     // selectSession,
     loginAsync,
+    selectError,
     selectIsAuthenticated,
     // setCSRFAsync,
 } from "./authSlice";
@@ -24,16 +25,32 @@ import {
     Text,
     useColorModeValue,
     ChakraProvider,
+    Alert,
+    AlertIcon,
+    AlertDescription,
+    AlertTitle,
 } from "@chakra-ui/react";
+import { useToast } from "@chakra-ui/react";
 import chakraTheme from "@chakra-ui/theme";
 
 export function Login() {
     const isAuthenticated = useAppSelector(selectIsAuthenticated);
     // const csrf = useAppSelector(selectCSRF);
     const dispatch = useAppDispatch();
+    const toast = useToast();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
+    const errorMessage = useAppSelector((state) => state.auth.error.message);
+    const errorStatus = useAppSelector((state) => state.auth.error.status);
+    const [err, setErr] = useState(
+        useAppSelector((state) => state.auth.error.message)
+    );
+
+    useEffect(() => {
+        // setErr(errorMessage);
+    }, []);
 
     const handleEmail = (event: {
         target: { value: React.SetStateAction<string> };
@@ -49,9 +66,12 @@ export function Login() {
 
     const handleSubmit = (event: { preventDefault: () => void }) => {
         event.preventDefault();
-
         dispatch(loginAsync({ email, password }));
+        // showToastMessage();
     };
+
+    // console.log(isAuthenticated ? "Is authenticated" : "Not Authenticated");
+    // console.log(err ? "err" : "No error");
 
     if (isAuthenticated) {
         return <Navigate to="/" replace />;
@@ -114,6 +134,15 @@ export function Login() {
                                 >
                                     Sign in
                                 </Button>
+                                {errorMessage ? (
+                                    <Alert status="error">
+                                        <AlertIcon />
+                                        <AlertTitle>Login Error</AlertTitle>
+                                        <AlertDescription>
+                                            {errorMessage}
+                                        </AlertDescription>
+                                    </Alert>
+                                ) : null}
                                 <Stack pt={6}>
                                     <Text align={"center"}>
                                         Need to signup?{" "}

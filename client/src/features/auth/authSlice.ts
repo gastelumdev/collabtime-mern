@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { getSession, login, logout, register } from './authAPI';
@@ -6,18 +6,25 @@ import { TSignin, TUser } from '../types/auth';
 import { TypedUseSelectorHook } from 'react-redux';
 import { ErrorResponse } from '@remix-run/router';
 
+interface TError {
+    status: number | null;
+    message: string;
+}
+
 interface TAuthState {
     isAuthenticated: boolean;
     status: 'idle' | 'loading' | 'failed';
     accessToken: string;
     userId: string | null;
+    error: TError;
 }
 
 const initialState: TAuthState = {
     isAuthenticated: false,
     accessToken: "",
     status: 'loading',
-    userId: null
+    userId: null,
+    error: {status: null, message: ""},
 }
 
 
@@ -30,9 +37,10 @@ export const loginAsync = createAsyncThunk(
             localStorage.setItem('userId', response.data.user.id);
             console.log(response.data);
             return response.data;
-        } catch (err) {
-            const errors = err as Error | AxiosError;
-            return thunkAPI.rejectWithValue({error: errors.message});
+        } catch (err: any) {
+            // const errors = err as Error | AxiosError;
+            console.log(err.response)
+            return thunkAPI.rejectWithValue({status: err.response?.status, message: err.response?.data.message});
         }
     }
 );
@@ -53,7 +61,6 @@ export const registerAsync = createAsyncThunk(
             
         } catch (err) {
             const errors = err as Error | AxiosError;
-            console.log(errors);
             return thunkAPI.rejectWithValue({error: errors.message});
         }
     }
@@ -109,9 +116,12 @@ export const authSlice = createSlice({
             state.status = 'idle';
             state.accessToken = action.payload.accessToken;
             state.isAuthenticated = action.payload.user.isAuthenticated;
+            state.error = {status: null, message: ""} as TError;
         })
-        .addCase(loginAsync.rejected, (state) => {
+        .addCase(loginAsync.rejected, (state, action) => {
             state.status = 'failed';
+            console.log(action.payload)
+            state.error = action.payload as TError;
         })
         .addCase(registerAsync.pending, (state) => {
             state.status = 'loading';
@@ -154,6 +164,7 @@ export const authSlice = createSlice({
 export const selectUserId = (state: RootState) => state.auth.userId;
 export const selectIsAuthenticated = (state: RootState) => state.auth.isAuthenticated;
 export const selectStatus = (state: RootState) => state.auth.status;
+export const selectError = (state: RootState) => state.auth.error;
 
 export default authSlice.reducer;
 
