@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
@@ -23,6 +23,10 @@ import {
     Text,
     useColorModeValue,
     ChakraProvider,
+    Alert,
+    AlertDescription,
+    AlertIcon,
+    AlertTitle,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 
@@ -35,6 +39,13 @@ const Register = () => {
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
     const [showPassword, setShowPassword] = useState(false);
+
+    const errorMessage = useAppSelector((state) => state.auth.error.message);
+    const errorStatus = useAppSelector((state) => state.auth.error.status);
+    const [err, setErr] = useState(
+        useAppSelector((state) => state.auth.error.message)
+    );
+    const [isError, setIsError] = useState(false);
 
     if (status === "loading") {
         console.log("Spinning!");
@@ -62,6 +73,7 @@ const Register = () => {
     const handleSubmit = (event: { preventDefault: () => void }) => {
         event.preventDefault();
         dispatch(registerAsync({ username, email, password }));
+        setIsError(true);
     };
 
     return isAuthenticated ? (
@@ -139,6 +151,15 @@ const Register = () => {
                                 >
                                     Sign up
                                 </Button>
+                                {err && errorStatus === 500 && isError ? (
+                                    <Alert status="error">
+                                        <AlertIcon />
+                                        <AlertTitle>Signup Error</AlertTitle>
+                                        <AlertDescription>
+                                            {errorMessage}
+                                        </AlertDescription>
+                                    </Alert>
+                                ) : null}
                             </Stack>
                             <Stack pt={6}>
                                 <Text align={"center"}>

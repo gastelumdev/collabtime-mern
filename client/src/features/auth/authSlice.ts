@@ -50,6 +50,7 @@ export const registerAsync = createAsyncThunk(
     async (user: TUser, thunkAPI) => {
         try {
             const regResponse: any = await register(user);
+            console.log(regResponse)
             if (regResponse.data.successful) {
                 const response = await login({email: user.email, password: user.password});
                 localStorage.setItem('token', response.data.accessToken);
@@ -58,10 +59,9 @@ export const registerAsync = createAsyncThunk(
                 return response.data;
             }
             
-            
-        } catch (err) {
-            const errors = err as Error | AxiosError;
-            return thunkAPI.rejectWithValue({error: errors.message});
+            return {user: {isAuthenticated: false}}
+        } catch (err: any) {
+            return thunkAPI.rejectWithValue({status: err.response?.status, message: err.response?.data.message});
         }
     }
 )
@@ -120,7 +120,6 @@ export const authSlice = createSlice({
         })
         .addCase(loginAsync.rejected, (state, action) => {
             state.status = 'failed';
-            console.log(action.payload)
             state.error = action.payload as TError;
         })
         .addCase(registerAsync.pending, (state) => {
@@ -128,11 +127,12 @@ export const authSlice = createSlice({
         })
         .addCase(registerAsync.fulfilled, (state, action) => {
             state.status = 'idle';
-            state.accessToken = action.payload.accessToken;
+            // state.accessToken = action.payload.accessToken;
             state.isAuthenticated = action.payload.user.isAuthenticated;
         })
-        .addCase(registerAsync.rejected, (state) => {
+        .addCase(registerAsync.rejected, (state, action) => {
             state.status = 'failed';
+            state.error = action.payload as TError;
         })
         .addCase(getSessionAsync.pending, (state) => {
             state.status = 'loading';

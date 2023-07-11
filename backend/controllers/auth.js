@@ -3,22 +3,50 @@ var bcrypt = require("bcrypt");
 var User = require("../models/User");
 
 exports.signup = async (req, res) => {
-  const user = new User({
-    username: req.body.username,
-    email: req.body.email,
-    role: "admin",
-    isAuthenticated: true,
-    password: bcrypt.hashSync(req.body.password, 8)
-  });
+  const user = await User.findOne({
+    email: req.body.email
+  }, "username email password isAuthenticated");
 
-  
+    // const user = new User({
+    //   username: req.body.username,
+    //   email: req.body.email,
+    //   role: "admin",
+    //   isAuthenticated: true,
+    //   password: bcrypt.hashSync(req.body.password, 8)
+    // });
 
-  try {
-    const request = await user.save();
-    res.send({message: "User registered successfully.", successful: true});
-  } catch (error) {
-    res.send(error);
-  }
+    try {
+      if (user) {
+        console.log(user)
+        res.status(500).send({successful: false, message: "User already exists."})
+      } else {
+        const user = new User({
+          username: req.body.username,
+          email: req.body.email,
+          role: "admin",
+          isAuthenticated: true,
+          password: bcrypt.hashSync(req.body.password, 8)
+        });
+
+        user.save();
+
+        res.send({successful: true, message: "Registered successfully."})
+      }
+    } catch (err) {
+      res.send(err)
+    }
+
+    
+
+    // if (user.code === 11000) {
+      
+    //   res.send({message: "User already exists.", successful: false})
+    // } else {
+      
+    //   const request = await user.save();
+    //   console.log(user)
+    //   res.send({message: "User registered successfully.", successful: true});
+    // }
 };
 
 exports.signin = async (req, res) => {

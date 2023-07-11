@@ -47,10 +47,7 @@ export function Login() {
     const [err, setErr] = useState(
         useAppSelector((state) => state.auth.error.message)
     );
-
-    useEffect(() => {
-        // setErr(errorMessage);
-    }, []);
+    const [isError, setIsError] = useState(false);
 
     const handleEmail = (event: {
         target: { value: React.SetStateAction<string> };
@@ -67,6 +64,7 @@ export function Login() {
     const handleSubmit = (event: { preventDefault: () => void }) => {
         event.preventDefault();
         dispatch(loginAsync({ email, password }));
+        setIsError(true);
         // showToastMessage();
     };
 
@@ -134,7 +132,7 @@ export function Login() {
                                 >
                                     Sign in
                                 </Button>
-                                {errorMessage ? (
+                                {err && errorStatus === 401 && isError ? (
                                     <Alert status="error">
                                         <AlertIcon />
                                         <AlertTitle>Login Error</AlertTitle>
