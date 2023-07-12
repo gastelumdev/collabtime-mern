@@ -35,7 +35,6 @@ import chakraTheme from "@chakra-ui/theme";
 
 export function Login() {
     const isAuthenticated = useAppSelector(selectIsAuthenticated);
-    // const csrf = useAppSelector(selectCSRF);
     const dispatch = useAppDispatch();
     const toast = useToast();
 
@@ -44,9 +43,6 @@ export function Login() {
 
     const errorMessage = useAppSelector((state) => state.auth.error.message);
     const errorStatus = useAppSelector((state) => state.auth.error.status);
-    const [err, setErr] = useState(
-        useAppSelector((state) => state.auth.error.message)
-    );
     const [isError, setIsError] = useState(false);
 
     const handleEmail = (event: {
@@ -65,7 +61,6 @@ export function Login() {
         event.preventDefault();
         dispatch(loginAsync({ email, password }));
         setIsError(true);
-        // showToastMessage();
     };
 
     // console.log(isAuthenticated ? "Is authenticated" : "Not Authenticated");
@@ -132,7 +127,7 @@ export function Login() {
                                 >
                                     Sign in
                                 </Button>
-                                {err && errorStatus === 401 && isError ? (
+                                {errorStatus === 401 && isError ? (
                                     <Alert status="error">
                                         <AlertIcon />
                                         <AlertTitle>Login Error</AlertTitle>
