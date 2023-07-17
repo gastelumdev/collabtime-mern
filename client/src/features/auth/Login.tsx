@@ -1,16 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import {
-    // getSessionAsync,
-    // loginAsync,
-    // selectCSRF,
-    // selectSession,
-    loginAsync,
-    selectError,
-    selectIsAuthenticated,
-    // setCSRFAsync,
-} from "./authSlice";
+import { loginAsync, selectIsAuthenticated } from "./authSlice";
 
 import {
     Flex,
@@ -18,31 +9,25 @@ import {
     FormControl,
     FormLabel,
     Input,
-    Checkbox,
     Stack,
     Button,
     Heading,
     Text,
-    useColorModeValue,
     ChakraProvider,
     Alert,
     AlertIcon,
     AlertDescription,
     AlertTitle,
 } from "@chakra-ui/react";
-import { useToast } from "@chakra-ui/react";
-import chakraTheme from "@chakra-ui/theme";
 
 export function Login() {
-    const isAuthenticated = useAppSelector(selectIsAuthenticated);
     const dispatch = useAppDispatch();
-    const toast = useToast();
+    const isAuthenticated = useAppSelector(selectIsAuthenticated);
+    const errorMessage = useAppSelector((state) => state.auth.error.message);
+    const errorStatus = useAppSelector((state) => state.auth.error.status);
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
-    const errorMessage = useAppSelector((state) => state.auth.error.message);
-    const errorStatus = useAppSelector((state) => state.auth.error.status);
     const [isError, setIsError] = useState(false);
 
     const handleEmail = (event: {
@@ -62,9 +47,6 @@ export function Login() {
         dispatch(loginAsync({ email, password }));
         setIsError(true);
     };
-
-    // console.log(isAuthenticated ? "Is authenticated" : "Not Authenticated");
-    // console.log(err ? "err" : "No error");
 
     if (isAuthenticated) {
         return <Navigate to="/" replace />;
@@ -107,16 +89,6 @@ export function Login() {
                                 />
                             </FormControl>
                             <Stack spacing={10}>
-                                {/* <Stack
-                                    direction={{ base: "column", sm: "row" }}
-                                    align={"start"}
-                                    justify={"space-between"}
-                                >
-                                    <Checkbox>Remember me</Checkbox>
-                                    <Link color={"blue.400"}>
-                                        Forgot password?
-                                    </Link>
-                                </Stack> */}
                                 <Button
                                     bg={"blue.400"}
                                     color={"white"}

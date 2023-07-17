@@ -1,10 +1,8 @@
 import axios, { AxiosError } from 'axios';
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 import { getSession, login, logout, register } from './authAPI';
 import { TSignin, TUser } from '../types/auth';
-import { TypedUseSelectorHook } from 'react-redux';
-import { ErrorResponse } from '@remix-run/router';
 
 interface TError {
     status: number | null;
@@ -38,7 +36,6 @@ export const loginAsync = createAsyncThunk(
             console.log(response.data);
             return response.data;
         } catch (err: any) {
-            // const errors = err as Error | AxiosError;
             console.log(err.response)
             return thunkAPI.rejectWithValue({status: err.response?.status, message: err.response?.data.message});
         }
@@ -81,7 +78,6 @@ export const getSessionAsync = createAsyncThunk(
         } catch (err) {
             const error = err as Error | AxiosError;
             console.log(error);
-            // return thunkAPI.rejectWithValue({error: error.message});
         }
     }
 )
@@ -91,9 +87,6 @@ export const logoutAsync = createAsyncThunk(
     async () => {
         try {
             const response = await logout();
-            
-            // localStorage.setItem("token", "");
-            // localStorage.setItem("userId", "");
             return response.data;
             
         } catch (err) {
@@ -127,7 +120,6 @@ export const authSlice = createSlice({
         })
         .addCase(registerAsync.fulfilled, (state, action) => {
             state.status = 'idle';
-            // state.accessToken = action.payload.accessToken;
             state.isAuthenticated = action.payload.user.isAuthenticated;
         })
         .addCase(registerAsync.rejected, (state, action) => {
