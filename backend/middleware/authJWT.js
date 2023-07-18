@@ -9,13 +9,9 @@ const verifyToken = (req, res, next) => {
       if (err) req.user = undefined;
 
       try {
-          console.log(decode.id)
           const user = await User.findOne({
             _id: decode.id
           })
-  
-          
-          console.log(req.headers)
   
           try {
               

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { updateEventAsync, getEventsAsync } from "./eventsSlice";
-import { TEvent } from "../types/event";
+import { updateDataAsync, getDataAsync } from "./slice";
+import { TData } from "./types";
+import config from "./config";
 import {
     Button,
     Drawer,
@@ -17,34 +18,30 @@ import {
     Stack,
 } from "@chakra-ui/react";
 import { useAppDispatch } from "../../app/hooks";
-import { Navigate } from "react-router-dom";
 
 interface PropsType {
-    _event: TEvent;
+    _data: TData;
     onRerender(): void;
 }
 
-const EditEvent = (props: PropsType) => {
+const Edit = (props: PropsType) => {
     const [redirect, setRedirect] = useState(false);
-    const { _event, onRerender } = props;
+    const { _data, onRerender } = props;
     const { isOpen, onOpen, onClose } = useDisclosure();
-    const [data, setData] = useState<TEvent>({
-        name: "",
-        description: "",
+    const [data, setData] = useState<TData>({
+        ...config.defaultData,
         owner: localStorage.getItem("userId"),
     });
 
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        dispatch(getEventsAsync());
-        console.log(data);
+        dispatch(getDataAsync());
     }, [dispatch, data]);
 
     const handleClick = () => {
-        // setSize(newSize);
         onOpen();
-        setData(_event);
+        setData(_data);
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -56,31 +53,21 @@ const EditEvent = (props: PropsType) => {
     };
 
     const onSubmit = () => {
-        console.log(_event);
         dispatch(
-            updateEventAsync({
-                _id: data._id,
-                name: data.name,
-                description: data.description,
+            updateDataAsync({
+                ...data,
                 owner: localStorage.getItem("userId"),
             })
         );
-        // setData({
-        //     title: "",
-        //     overview: "",
-        //     date: new Date(),
-        // });
-        dispatch(getEventsAsync());
+        dispatch(getDataAsync());
         onRedirect();
         onRerender();
         onClose();
     };
 
     const onRedirect = () => {
-        setRedirect(true);
+        setRedirect(!redirect);
     };
-
-    // if (redirect) return <Navigate to={`/dashboard/${_event._id}/`} replace />;
 
     return (
         <>
@@ -97,34 +84,37 @@ const EditEvent = (props: PropsType) => {
                 <DrawerOverlay />
                 <DrawerContent>
                     <DrawerCloseButton />
-                    <DrawerHeader>Edit Event</DrawerHeader>
+                    <DrawerHeader>
+                        Edit{" "}
+                        {config.singularName.charAt(0).toUpperCase() +
+                            config.singularName.slice(1)}
+                    </DrawerHeader>
                     <DrawerBody>
                         <DrawerBody>
                             <Stack spacing="24px">
                                 {" "}
                                 */
-                                <Box>
-                                    <FormLabel htmlFor="name">Title</FormLabel>
-                                    <Input
-                                        id="name"
-                                        name="name"
-                                        placeholder="Pleas enter the title of the event"
-                                        onChange={handleChange}
-                                        value={data.name}
-                                    />
-                                </Box>
-                                <Box>
-                                    <FormLabel htmlFor="description">
-                                        Overview
-                                    </FormLabel>
-                                    <Input
-                                        id="description"
-                                        name="description"
-                                        placeholder="Please enter the event overview"
-                                        onChange={handleChange}
-                                        value={data.description}
-                                    />
-                                </Box>
+                                {config.formInputs.map(
+                                    (item: string, index: any) => {
+                                        return (
+                                            <Box key={index}>
+                                                <FormLabel htmlFor={item}>
+                                                    {item
+                                                        .charAt(0)
+                                                        .toUpperCase() +
+                                                        item.slice(1)}
+                                                </FormLabel>
+                                                <Input
+                                                    id={item}
+                                                    name={item}
+                                                    placeholder={`Pleas enter the ${item} of the ${config.singularName}`}
+                                                    onChange={handleChange}
+                                                    value={(data as any)[item]}
+                                                />
+                                            </Box>
+                                        );
+                                    }
+                                )}
                             </Stack>
                         </DrawerBody>
                         <DrawerFooter borderTopWidth="1px">
@@ -142,4 +132,4 @@ const EditEvent = (props: PropsType) => {
     );
 };
 
-export default EditEvent;
+export default Edit;

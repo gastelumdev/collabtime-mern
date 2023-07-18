@@ -1,18 +1,17 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import axios from "axios";
-import API_URL from "../api/api_url";
 import { logoutAsync } from "../auth/authSlice";
 import {
-    createEventAsync,
-    deleteEventAsync,
-    getEventsAsync,
-    selectCreatedEvent,
-    selectEvents,
-    updateEventAsync,
-} from "./eventsSlice";
+    createDataAsync,
+    deleteDataAsync,
+    getDataAsync,
+    selectData,
+} from "./slice";
+import { TData } from "./types";
+import config from "./config";
 import NavBar from "../../components/NavBar";
+import Edit from "./Edit";
 import {
     SimpleGrid,
     Card,
@@ -22,7 +21,6 @@ import {
     CardFooter,
     Button,
     Text,
-    Wrap,
     Container,
     Center,
     Box,
@@ -35,83 +33,52 @@ import {
     DrawerOverlay,
     FormLabel,
     Input,
-    InputGroup,
-    InputLeftAddon,
-    InputRightAddon,
-    Select,
     Stack,
-    Textarea,
     useDisclosure,
     HStack,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
-import { Navigate, useNavigate } from "react-router-dom";
-import EditEvent from "./EditEvent";
-import { TEvent } from "../types/event";
 
-console.log(API_URL);
-
-// interface TEvent {
-//     _id?: any | null;
-//     name: string;
-//     description: string;
-// }
-
-const Events = () => {
-    const events = useAppSelector(selectEvents);
-    const newEvent = useAppSelector(selectCreatedEvent);
+const View = () => {
+    const dispatch = useAppDispatch();
+    const _data = useAppSelector(selectData);
+    const { isOpen, onOpen, onClose } = useDisclosure();
 
     const [rerender, setRerender] = useState(true);
     const [redirect, setRedirect] = useState(false);
-    const [data, setData] = useState<TEvent>({
-        name: "",
-        description: "",
+    const [data, setData] = useState<TData>({
+        ...config.defaultData,
         owner: localStorage.getItem("userId"),
     });
 
-    const navigate = useNavigate();
-    const dispatch = useAppDispatch();
-    const { isOpen, onOpen, onClose } = useDisclosure();
-    const firstField = React.useRef();
-
     useEffect(() => {
-        dispatch(getEventsAsync());
+        dispatch(getDataAsync());
     }, [dispatch, rerender, redirect]);
 
-    const createEvent = async () => {
-        // const event = { name: "New Event 1", description: "New Event Desc" };
-        dispatch(createEventAsync(data));
+    const createData = async () => {
+        delete data._id;
+        dispatch(createDataAsync(data));
         setData({
-            name: "",
-            description: "",
+            ...config.defaultData,
             owner: localStorage.getItem("userId"),
         });
-        dispatch(getEventsAsync());
+        dispatch(getDataAsync());
         setRerender(!rerender);
         onClose();
     };
 
-    const handleUpdateEventButton = (event: TEvent) => {
-        console.log(event);
-        onOpen();
-    };
-
-    const handleUpdateEvent = async (event: TEvent) => {
-        dispatch(updateEventAsync(data));
-        dispatch(getEventsAsync());
+    const handleDeleteData = async (dataId: string) => {
+        dispatch(deleteDataAsync(dataId));
+        dispatch(getDataAsync());
         setRerender(!rerender);
     };
 
-    const handleDeleteEvent = async (eventId: string) => {
-        console.log(eventId);
-        dispatch(deleteEventAsync(eventId));
-        dispatch(getEventsAsync());
-        setRerender(!rerender);
+    const handleLogout = async () => {
+        dispatch(logoutAsync());
     };
 
-    const handleSetEventId = (eventId: string) => {
-        // dispatch(setEventId(eventId));
-        localStorage.setItem("eventId", eventId);
+    const handleSetDataId = (dataId: string) => {
+        localStorage.setItem(`${config.singularName}Id`, dataId);
         setRerender(!rerender);
         setRedirect(true);
     };
@@ -125,19 +92,16 @@ const Events = () => {
     };
 
     const onRerender = () => {
-        dispatch(getEventsAsync());
+        dispatch(getDataAsync());
         setRerender(!rerender);
-        console.log(rerender);
     };
 
-    const handleLogout = async () => {
-        dispatch(logoutAsync());
-    };
-
-    if (redirect && localStorage.getItem("eventId"))
+    if (redirect && localStorage.getItem(`${config.singularName}Id`))
         return (
             <Navigate
-                to={`/participants/${localStorage.getItem("eventId")}/`}
+                to={`/${config.redirectComponent}/${localStorage.getItem(
+                    `${config.singularName}Id`
+                )}/`}
                 replace
             />
         );
@@ -146,45 +110,36 @@ const Events = () => {
         <div>
             <NavBar logout={handleLogout} />
 
-            {/********** CREATE EVENT DRAWER **********/}
-            <Drawer
-                isOpen={isOpen}
-                placement="right"
-                // initialFocusRef={firstField}
-                onClose={onClose}
-            >
+            {/********** CREATE DRAWER **********/}
+            <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
                 <DrawerOverlay />
                 <DrawerContent>
                     <DrawerCloseButton />
                     <DrawerHeader borderBottomWidth="1px">
-                        Create a new event
+                        Create a new {config.singularName}
                     </DrawerHeader>
 
                     <DrawerBody>
                         <Stack spacing="24px">
-                            <Box>
-                                <FormLabel htmlFor="name">Name</FormLabel>
-                                <Input
-                                    // ref={firstField}
-                                    id="name"
-                                    name="name"
-                                    placeholder="Please enter event name"
-                                    onChange={handleChange}
-                                />
-                            </Box>
-
-                            <Box>
-                                <FormLabel htmlFor="name">
-                                    Description
-                                </FormLabel>
-                                <Input
-                                    // ref={firstField}
-                                    id="description"
-                                    name="description"
-                                    placeholder="Please enter event description"
-                                    onChange={handleChange}
-                                />
-                            </Box>
+                            {config.formInputs.map(
+                                (item: string, index: any) => {
+                                    return (
+                                        <Box key={index}>
+                                            <FormLabel htmlFor={item}>
+                                                {item.charAt(0).toUpperCase() +
+                                                    item.slice(1)}
+                                            </FormLabel>
+                                            <Input
+                                                id={item}
+                                                name={item}
+                                                placeholder={`Pleas enter the ${item} of the ${config.singularName}`}
+                                                onChange={handleChange}
+                                                value={(data as any)[item]}
+                                            />
+                                        </Box>
+                                    );
+                                }
+                            )}
                         </Stack>
                     </DrawerBody>
 
@@ -192,17 +147,14 @@ const Events = () => {
                         <Button variant="outline" mr={3} onClick={onClose}>
                             Cancel
                         </Button>
-                        <Button
-                            colorScheme="blue"
-                            onClick={() => createEvent()}
-                        >
+                        <Button colorScheme="blue" onClick={() => createData()}>
                             Submit
                         </Button>
                     </DrawerFooter>
                 </DrawerContent>
             </Drawer>
 
-            {/********************* EVENTS BODY **********************/}
+            {/********************* PAGE BODY **********************/}
             <Container maxW="4xl" pt={"30px"} pb={"50px"}>
                 <Button
                     leftIcon={<AddIcon />}
@@ -210,24 +162,29 @@ const Events = () => {
                     onClick={onOpen}
                     mb={"50px"}
                 >
-                    Create event
+                    Create {config.singularName}
                 </Button>
                 <Heading>
-                    <Center pb={"50px"}>Events</Center>
+                    <Center pb={"50px"}>
+                        {config.name.charAt(0).toUpperCase() +
+                            config.name.slice(1)}
+                    </Center>
                 </Heading>
                 <SimpleGrid
                     spacing={4}
                     templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
                     // alignContent={"center"}
                 >
-                    {events.length > 0
-                        ? events.map((event: TEvent, index: any) => (
+                    {_data.length > 0
+                        ? _data.map((data: TData, index: any) => (
                               <Card key={index}>
                                   <CardHeader>
-                                      <Heading size="md">{event.name}</Heading>
+                                      <Heading size="md">
+                                          {data["name"]}
+                                      </Heading>
                                   </CardHeader>
                                   <CardBody>
-                                      <Text>{event.description}</Text>
+                                      <Text>{data["description"]}</Text>
                                   </CardBody>
                                   <CardFooter>
                                       <HStack>
@@ -236,31 +193,22 @@ const Events = () => {
                                               variant="ghost"
                                               size="xs"
                                               onClick={() =>
-                                                  handleSetEventId(event._id)
+                                                  handleSetDataId(data["_id"])
                                               }
                                           >
                                               View
                                           </Button>
-                                          <EditEvent
-                                              _event={event}
+                                          <Edit
+                                              _data={data}
                                               onRerender={onRerender}
                                           />
-                                          {/* <Button
-                                        colorScheme="teal"
-                                        variant="ghost"
-                                        size="xs"
-                                        onClick={() =>
-                                            handleUpdateEventButton(event)
-                                        }
-                                    >
-                                        Edit
-                                    </Button> */}
+
                                           <Button
                                               colorScheme="red"
                                               variant="ghost"
                                               size="xs"
                                               onClick={() =>
-                                                  handleDeleteEvent(event._id)
+                                                  handleDeleteData(data["_id"])
                                               }
                                           >
                                               Delete
@@ -271,9 +219,10 @@ const Events = () => {
                           ))
                         : null}
                 </SimpleGrid>
-                {events.length === 0 ? (
+                {_data.length === 0 ? (
                     <Center>
-                        Click the Create event button to create an event.
+                        Click the Create {config.name} button to create an{" "}
+                        {config.name}.
                     </Center>
                 ) : null}
             </Container>
@@ -281,4 +230,4 @@ const Events = () => {
     );
 };
 
-export default Events;
+export default View;

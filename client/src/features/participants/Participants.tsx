@@ -483,7 +483,6 @@ const Dashboard = () => {
                             <Box>
                                 <FormLabel htmlFor="name">Name</FormLabel>
                                 <Input
-                                    // ref={firstField}
                                     id="name"
                                     name="name"
                                     placeholder="Please enter event name"
@@ -494,7 +493,6 @@ const Dashboard = () => {
                             <Box>
                                 <FormLabel htmlFor="email">Email</FormLabel>
                                 <Input
-                                    // ref={firstField}
                                     id="email"
                                     name="email"
                                     placeholder="Please enter participant email"
