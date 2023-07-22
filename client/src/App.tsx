@@ -1,4 +1,4 @@
-import Events from "./features/events/Events";
+import Events from "./features/events/View";
 import { Login } from "./features/auth/Login";
 import PrivateRoutes from "./components/PrivateRoutes";
 import {
@@ -14,9 +14,9 @@ import {
 } from "./features/auth/authSlice";
 import { useEffect, useState } from "react";
 import Dashboard from "./components/Dashboard";
-import Participants from "./features/participants/Participants";
+import Participants from "./features/participants/View";
 import Register from "./features/auth/Register";
-import ParticipantForm from "./features/participants/ParticipantForm";
+import ParticipantForm from "./features/participants/DataForm";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(

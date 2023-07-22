@@ -8,7 +8,7 @@ const ParticipantSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        unique: [true, "email already exists in database!"],
+        unique: [false, "email already exists in database!"],
         lowercase: true,
         trim: true,
         required: [true, "email not provided"],

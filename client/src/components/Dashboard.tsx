@@ -16,10 +16,7 @@ import { useAppDispatch, useAppSelector } from "../app/hooks";
 // import { selectEventId } from "../features/events/eventsSlice";
 import DataTable from "react-data-table-component";
 import { useParams } from "react-router-dom";
-import {
-    getParticipantsAsync,
-    selectParticipants,
-} from "../features/participants/participantSlice";
+import { getDataAsync, selectData } from "../features/participants/slice";
 
 const columns = [
     {
@@ -49,7 +46,7 @@ const data = [
 
 const Dashboard = () => {
     // const eventId = useAppSelector(selectEventId);
-    const participants = useAppSelector(selectParticipants);
+    const participants = useAppSelector(selectData);
     const params = useParams();
     const [eventId, setEventId] = useState(() => {
         const inittialValue = localStorage.getItem("eventId") || "";
@@ -60,7 +57,7 @@ const Dashboard = () => {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        dispatch(getParticipantsAsync(localStorage.getItem("eventId")));
+        dispatch(getDataAsync(eventId));
     }, [dispatch]);
 
     return (

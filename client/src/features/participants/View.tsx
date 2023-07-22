@@ -27,60 +27,28 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import DataTable, { TableColumn, TableRow } from "react-data-table-component";
 import { Link, useParams } from "react-router-dom";
 import {
-    createParticipantAsync,
-    deleteParticipantAsync,
-    getParticipantsAsync,
-    selectCreatedParticipant,
+    createDataAsync,
+    deleteDataAsync,
+    getDataAsync,
+    selectCreatedData,
     selectError,
-    selectParticipants,
-    updateParticipantAsync,
-} from "./participantSlice";
-import { TParticipant } from "../types/participant";
+    selectData,
+    updateDataAsync,
+} from "./slice";
+import { TCol, TData } from "./types";
 import { AddIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import NavBar from "../../components/NavBar";
 import { logoutAsync } from "../auth/authSlice";
+import config from "./config";
 
-const Dashboard = () => {
-    const participants = useAppSelector(selectParticipants);
-    const createdParticipant = useAppSelector(selectCreatedParticipant);
+const View = () => {
+    const _data = useAppSelector(selectData);
+    const createdData = useAppSelector(selectCreatedData);
     const toast = useToast();
     const error = useAppSelector(selectError);
 
-    const [rerender, setRerender] = useState(true);
-    const [data, setData] = useState<TParticipant>({
-        name: "",
-        email: "",
-        street: "",
-        city: "",
-        state: "",
-        zipcode: "",
-        band_director_name: "",
-        band_director_phone: "",
-        band_director_email: "",
-        booster_parent_name: "",
-        booster_parent_phone: "",
-        booster_parent_email: "",
-        parade_march_title: "",
-        parade_march_composer: "",
-        additional_band_staff_names: "",
-        drum_major: "",
-        drum_major_name: "",
-        color_guard_advisor: "",
-        color_guard_captains: "",
-        drill_team: "",
-        drill_team_advisor: "",
-        drill_team_captains: "",
-        school_enrollment: "",
-        number_of_students_in_band: "",
-        number_of_students_in_color_guard: "",
-        number_of_students_in_drill_team: "",
-        number_of_buses: "",
-        number_of_box_trucks: "",
-        number_of_trailers: "",
-        number_of_tractor_trailer_rigs: "",
-        special_instructions: "",
-        event: localStorage.getItem("eventId"),
-    });
+    const [rerender, setRerender] = useState(false);
+    const [data, setData] = useState<TData>(config.defaultData);
     const [isCreate, setIsCreate] = useState(true);
     const params = useParams();
 
@@ -97,18 +65,23 @@ const Dashboard = () => {
     } = useDisclosure();
 
     useEffect(() => {
-        dispatch(getParticipantsAsync(localStorage.getItem("eventId")));
-    }, [dispatch, rerender]);
+        dispatch(
+            getDataAsync(
+                localStorage.getItem(`${config.parentFeature.slice(0, -1)}Id`)
+            )
+        );
+        console.log(rerender);
+    }, [dispatch, rerender, data]);
 
-    const createParticipant = async () => {
-        console.log(data);
-        dispatch(createParticipantAsync(data));
-        setData({
-            name: "",
-            email: "",
-            event: localStorage.getItem("eventId"),
-        });
-        dispatch(getParticipantsAsync(localStorage.getItem("eventId")));
+    const createData = async () => {
+        delete data._id;
+        dispatch(createDataAsync(data));
+        setData(config.defaultData);
+        dispatch(
+            getDataAsync(
+                localStorage.getItem(`${config.parentFeature.slice(0, -1)}Id`)
+            )
+        );
         setRerender(!rerender);
         onCreateClose();
 
@@ -125,28 +98,42 @@ const Dashboard = () => {
         }
     };
 
-    const handleDelete = async (participantId: string) => {
-        dispatch(deleteParticipantAsync(participantId));
-        dispatch(getParticipantsAsync(localStorage.getItem("eventId")));
+    const handleDelete = async (dataId: string) => {
+        dispatch(deleteDataAsync(dataId));
+        dispatch(
+            getDataAsync(
+                localStorage.getItem(`${config.parentFeature.slice(0, -1)}Id`)
+            )
+        );
         setRerender(!rerender);
     };
 
-    const handleUpdateButton = async (participant: TParticipant) => {
+    const handleUpdateButton = async (data: TData) => {
         setIsCreate(true);
         onUpdateOpen();
         setData({
-            _id: participant._id,
-            name: participant.name,
-            email: participant.email,
-            event: localStorage.getItem("eventId"),
+            ...data,
+            [config.parentFeature.slice(0, -1)]: localStorage.getItem(
+                `${config.parentFeature.slice(0, -1)}Id`
+            ),
         });
+        setRerender(true);
     };
 
     const handleUpdate = async () => {
-        dispatch(updateParticipantAsync(data));
-        dispatch(getParticipantsAsync(localStorage.getItem("eventId")));
-        setRerender(!rerender);
+        dispatch(updateDataAsync(data));
+        setData(data);
+        onRerender();
         onUpdateClose();
+    };
+
+    const onRerender = () => {
+        dispatch(
+            getDataAsync(
+                localStorage.getItem(`${config.parentFeature.slice(0, -1)}Id`)
+            )
+        );
+        setRerender(!rerender);
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -163,7 +150,7 @@ const Dashboard = () => {
 
     const handleError = () => {};
 
-    function convertArrayOfObjectsToCSV(array: [TParticipant]) {
+    function convertArrayOfObjectsToCSV(array: [TData]) {
         let result: string;
 
         const columnDelimiter = ",";
@@ -174,13 +161,13 @@ const Dashboard = () => {
         result += keys.join(columnDelimiter);
         result += lineDelimiter;
 
-        array.forEach((item: TParticipant) => {
+        array.forEach((item: TData) => {
             let ctr = 0;
             keys.forEach((key: string) => {
                 console.log(key);
                 if (ctr > 0) result += columnDelimiter;
 
-                result += item[key as keyof TParticipant];
+                result += item[key as keyof TData];
                 // eslint-disable-next-line no-plusplus
                 ctr++;
             });
@@ -191,7 +178,7 @@ const Dashboard = () => {
     }
 
     // Blatant "inspiration" from https://codepen.io/Jacqueline34/pen/pyVoWr
-    function downloadCSV(array: [TParticipant]) {
+    function downloadCSV(array: [TData]) {
         const link = document.createElement("a");
         let csv = convertArrayOfObjectsToCSV(array);
         if (csv == null) return;
@@ -213,210 +200,44 @@ const Dashboard = () => {
 
     const ExportCSV = () => {
         const actionsMemo = React.useMemo(
-            () => (
-                <Export
-                    onExport={() => downloadCSV(participants as [TParticipant])}
-                />
-            ),
+            () => <Export onExport={() => downloadCSV(_data as [TData])} />,
             []
         );
 
         return (
             <DataTable
-                title="Participants"
+                title={
+                    config.name.charAt(0).toUpperCase() + config.name.slice(1)
+                }
                 columns={columns}
-                data={participants}
+                data={_data}
                 actions={actionsMemo}
                 pagination
             />
         );
     };
 
-    type DataRow = {
-        _id: string;
-        name: string;
-        email: string;
+    const createColumnsFromConfig = (cols: TCol[]) => {
+        const colsResult: any = [];
+        cols.forEach((col: TCol) => {
+            const name = col.name;
+            const sortable = col.sortable;
+            const omit = col.omit;
+            colsResult.push({
+                name: name.charAt(0).toUpperCase() + name.slice(1),
+                selector: (row: { [name: string]: string }) => row[name],
+                sortable: sortable,
+                omit: omit,
+            });
+        });
+
+        return colsResult;
     };
 
     const columns: any = [
+        ...createColumnsFromConfig(config.columns),
         {
-            name: "Name",
-            selector: (row: { name: any }) => row.name,
-            sortable: true,
-        },
-        {
-            name: "Email",
-            selector: (row: { email: any }) => row.email,
-            sortable: true,
-        },
-        {
-            name: "Street address",
-            selector: (row: { street_address: any }) => row.street_address,
-            omit: true,
-        },
-        {
-            name: "City",
-            selector: (row: { city: any }) => row.city,
-            omit: true,
-        },
-        {
-            name: "State",
-            selector: (row: { state: any }) => row.state,
-            omit: true,
-        },
-        {
-            name: "Zipcode",
-            selector: (row: { zipcode: any }) => row.zipcode,
-            omit: true,
-        },
-        {
-            name: "Band Director",
-            selector: (row: { band_director_name: any }) =>
-                row.band_director_name,
-            omit: true,
-        },
-        {
-            name: "Band Director Phone",
-            selector: (row: { band_director_phone: any }) =>
-                row.band_director_phone,
-            omit: true,
-        },
-        {
-            name: "Band Director Email",
-            selector: (row: { band_director_email: any }) =>
-                row.band_director_email,
-            omit: true,
-        },
-        {
-            name: "Booster Parent Name",
-            selector: (row: { booster_parent_name: any }) =>
-                row.booster_parent_name,
-            omit: true,
-        },
-        {
-            name: "Booster Parent Phone",
-            selector: (row: { booster_parent_phone: any }) =>
-                row.booster_parent_phone,
-            omit: true,
-        },
-        {
-            name: "Booster Parent Email",
-            selector: (row: { booster_parent_email: any }) =>
-                row.booster_parent_email,
-            omit: true,
-        },
-        {
-            name: "Parade March Title",
-            selector: (row: { parade_march_title: any }) =>
-                row.parade_march_title,
-            omit: true,
-        },
-        {
-            name: "Parade March Composer",
-            selector: (row: { parade_march_composer: any }) =>
-                row.parade_march_composer,
-            omit: true,
-        },
-        {
-            name: "Additional Band Staff Names",
-            selector: (row: { additional_band_staff_names: any }) =>
-                row.additional_band_staff_names,
-            omit: true,
-        },
-        {
-            name: "Drum Major",
-            selector: (row: { drum_major: any }) => row.drum_major,
-            omit: true,
-        },
-        {
-            name: "Drum Major Name",
-            selector: (row: { drum_major_name: any }) => row.drum_major_name,
-            omit: true,
-        },
-        {
-            name: "Color Guard Advisor",
-            selector: (row: { color_guard_advisor: any }) =>
-                row.color_guard_advisor,
-            omit: true,
-        },
-        {
-            name: "Color Guard Captains",
-            selector: (row: { color_guard_captains: any }) =>
-                row.color_guard_captains,
-            omit: true,
-        },
-        {
-            name: "Drill Team",
-            selector: (row: { drill_team: any }) => row.drill_team,
-            omit: true,
-        },
-        {
-            name: "Drill Team Advisor",
-            selector: (row: { drill_team_advisor: any }) =>
-                row.drill_team_advisor,
-            omit: true,
-        },
-        {
-            name: "Color Guard Captains",
-            selector: (row: { color_guard_captains: any }) =>
-                row.color_guard_captains,
-            omit: true,
-        },
-        {
-            name: "School Enrollment",
-            selector: (row: { school_enrollment: any }) =>
-                row.school_enrollment,
-            omit: true,
-        },
-        {
-            name: "Number of Students in Band",
-            selector: (row: { number_of_students_in_band: any }) =>
-                row.number_of_students_in_band,
-            omit: true,
-        },
-        {
-            name: "Number of Students in Color Guard",
-            selector: (row: { number_of_students_in_color_guard: any }) =>
-                row.number_of_students_in_color_guard,
-            omit: true,
-        },
-        {
-            name: "Number of Students in Drill Team",
-            selector: (row: { number_of_students_in_drill_team: any }) =>
-                row.number_of_students_in_drill_team,
-            omit: true,
-        },
-        {
-            name: "Number of Buses",
-            selector: (row: { number_of_buses: any }) => row.number_of_buses,
-            omit: true,
-        },
-        {
-            name: "Number of Box Trucks",
-            selector: (row: { number_of_box_trucks: any }) =>
-                row.number_of_box_trucks,
-            omit: true,
-        },
-        {
-            name: "Number of Trailers",
-            selector: (row: { number_of_trailers: any }) =>
-                row.number_of_trailers,
-            omit: true,
-        },
-        {
-            name: "Number of Tractor Trailer Rigs",
-            selector: (row: { number_of_tractor_trailer_rigs: any }) =>
-                row.number_of_tractor_trailer_rigs,
-            omit: true,
-        },
-        {
-            name: "Special Instructions",
-            selector: (row: { special_instructions: any }) =>
-                row.special_instructions,
-            omit: true,
-        },
-        {
-            cell: (row: TParticipant) => (
+            cell: (row: TData) => (
                 <>
                     <Button
                         size="xs"
@@ -437,7 +258,7 @@ const Dashboard = () => {
             ),
         },
         {
-            cell: (row: TParticipant) =>
+            cell: (row: TData) =>
                 row.status === "Pending" ? (
                     <>
                         <Badge colorScheme="blue">
@@ -447,7 +268,7 @@ const Dashboard = () => {
                 ) : row.status === "Submitted" ? (
                     <>
                         <Badge colorScheme="purple">
-                            <Link to={"/participants/form/" + row._id}>
+                            <Link to={`/${config.name}/form/` + row._id}>
                                 Verify
                             </Link>
                         </Badge>
@@ -455,7 +276,9 @@ const Dashboard = () => {
                 ) : (
                     <>
                         <Badge colorScheme="green">
-                            <Text>Verified</Text>
+                            <Link to={`/${config.name}/form/` + row._id}>
+                                Verified
+                            </Link>
                         </Badge>
                     </>
                 ),
@@ -475,12 +298,14 @@ const Dashboard = () => {
                 <DrawerContent>
                     <DrawerCloseButton />
                     <DrawerHeader borderBottomWidth="1px">
-                        Invite Participant
+                        Invite{" "}
+                        {config.singularName.charAt(0).toUpperCase() +
+                            config.singularName.slice(1)}
                     </DrawerHeader>
 
                     <DrawerBody>
                         <Stack spacing="24px">
-                            <Box>
+                            {/* <Box>
                                 <FormLabel htmlFor="name">Name</FormLabel>
                                 <Input
                                     id="name"
@@ -498,7 +323,26 @@ const Dashboard = () => {
                                     placeholder="Please enter participant email"
                                     onChange={handleChange}
                                 />
-                            </Box>
+                            </Box> */}
+                            {config.formInputs.map(
+                                (item: string, index: any) => {
+                                    return (
+                                        <Box key={index}>
+                                            <FormLabel htmlFor={item}>
+                                                {item.charAt(0).toUpperCase() +
+                                                    item.slice(1)}
+                                            </FormLabel>
+                                            <Input
+                                                id={item}
+                                                name={item}
+                                                placeholder={`Pleas enter the ${item} of the ${config.singularName}`}
+                                                onChange={handleChange}
+                                                value={(data as any)[item]}
+                                            />
+                                        </Box>
+                                    );
+                                }
+                            )}
                         </Stack>
                     </DrawerBody>
 
@@ -510,10 +354,7 @@ const Dashboard = () => {
                         >
                             Cancel
                         </Button>
-                        <Button
-                            colorScheme="blue"
-                            onClick={() => createParticipant()}
-                        >
+                        <Button colorScheme="blue" onClick={() => createData()}>
                             Create
                         </Button>
                     </DrawerFooter>
@@ -530,7 +371,9 @@ const Dashboard = () => {
                 <DrawerContent>
                     <DrawerCloseButton />
                     <DrawerHeader borderBottomWidth="1px">
-                        Invite Participant
+                        Invite{" "}
+                        {config.singularName.charAt(0).toUpperCase() +
+                            config.singularName.slice(1)}
                     </DrawerHeader>
 
                     <DrawerBody>
@@ -592,11 +435,17 @@ const Dashboard = () => {
                     separator={<ChevronRightIcon color="gray.500" />}
                 >
                     <BreadcrumbItem>
-                        <BreadcrumbLink href={`/#/`}>Events</BreadcrumbLink>
+                        <BreadcrumbLink href={`/#/`}>
+                            {config.parentFeature.charAt(0).toUpperCase() +
+                                config.parentFeature.slice(1)}
+                        </BreadcrumbLink>
                     </BreadcrumbItem>
 
                     <BreadcrumbItem isCurrentPage>
-                        <BreadcrumbLink href="#">Participants</BreadcrumbLink>
+                        <BreadcrumbLink href="#">
+                            {config.name.charAt(0).toUpperCase() +
+                                config.name.slice(1)}
+                        </BreadcrumbLink>
                     </BreadcrumbItem>
                 </Breadcrumb>
             </Box>
@@ -615,7 +464,9 @@ const Dashboard = () => {
                     mb="30px"
                     onClick={onCreateOpen}
                 >
-                    Invite Participant
+                    Invite{" "}
+                    {config.singularName.charAt(0).toUpperCase() +
+                        config.singularName.slice(1)}
                 </Button>
 
                 {/* Datatable */}
@@ -632,4 +483,4 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard;
+export default View;

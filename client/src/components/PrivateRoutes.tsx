@@ -7,14 +7,9 @@ import {
     selectStatus as selectAuthStatus,
 } from "../features/auth/authSlice";
 import { Spinner } from "@chakra-ui/react";
-import {
-    getParticipantsAsync,
-    selectStatus as selectParticipantStatus,
-} from "../features/participants/participantSlice";
 
 const PrivateRoutes = () => {
     const status = useAppSelector(selectAuthStatus);
-    const participantStatus = useAppSelector(selectParticipantStatus);
     const [isAuthenticated, setIsAuthenticated] = useState(
         useAppSelector(selectIsAuthenticated)
     );
@@ -23,9 +18,6 @@ const PrivateRoutes = () => {
     useEffect(() => {
         dispatch(getSessionAsync());
     }, []);
-
-    console.log("isAuthenticated", isAuthenticated);
-    console.log(participantStatus);
 
     if (status === "loading") {
         return <Spinner />;

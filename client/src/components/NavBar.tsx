@@ -91,8 +91,8 @@ export default function Nav({ logout }: TAuth) {
                                     </Center>
                                     <br />
                                     <MenuDivider />
-                                    <MenuItem>Your Servers</MenuItem>
-                                    <MenuItem>Account Settings</MenuItem>
+                                    {/* <MenuItem>Your Servers</MenuItem>
+                                    <MenuItem>Account Settings</MenuItem> */}
                                     <MenuItem onClick={logout}>Logout</MenuItem>
                                 </MenuList>
                             </Menu>
