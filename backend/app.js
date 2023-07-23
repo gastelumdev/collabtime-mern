@@ -2,16 +2,15 @@ const express = require("express");
 const mongoose = require("mongoose");
 const nodemailer = require("nodemailer");
 const app = express();
-const userRoutes = require("./routes/user");
-const eventRoutes = require("./routes/event");
-const participantRoutes = require("./routes/participant");
+const userRoutes = require("./auth/routes");
+const eventRoutes = require("./features/events/routes");
+const participantRoutes = require("./features/participants/routes");
 const messageRoutes = require("./routes/message")
 const cors = require("cors");
 const bodyparser = require("body-parser");
 const path = require('path');
 require("dotenv").config({ path: path.resolve(__dirname, './.env') });
 const connectDB = require('./config/db');
-const eventModel = require("./models/Event");
 
 connectDB();
 

@@ -1,6 +1,6 @@
 var jwt = require("jsonwebtoken");
 var bcrypt = require("bcrypt");
-var User = require("../models/User");
+var User = require("./model.js");
 
 exports.signup = async (req, res) => {
   const user = await User.findOne({

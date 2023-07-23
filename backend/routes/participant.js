@@ -35,8 +35,6 @@ router.post("/participants", verifyToken, async (request, response) => {
         try {
             await participant.save();
 
-            console.log(participant)
-
             const transporter = nodemailer.createTransport({
                 port: 465,               // true for 465, false for other ports
                 host: process.env.EMAIL_HOST,
@@ -61,8 +59,6 @@ router.post("/participants", verifyToken, async (request, response) => {
                 else
                   response.status(200).send(participant)
              });
-
-            //  response.status(200).send(participant)
         } catch (error) {
             console.log(error)
             response.status(500).send(error);
