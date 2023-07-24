@@ -22,6 +22,7 @@ import {
     Breadcrumb,
     BreadcrumbItem,
     BreadcrumbLink,
+    Select,
 } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import DataTable, { TableColumn, TableRow } from "react-data-table-component";
@@ -75,6 +76,11 @@ const View = () => {
 
     const createData = async () => {
         delete data._id;
+        if (config.orderedList) {
+            console.log(_data.length);
+            data.order_number = (_data as any).length + 1;
+        }
+        console.log(data);
         dispatch(createDataAsync(data));
         setData(config.defaultData);
         dispatch(
@@ -98,6 +104,11 @@ const View = () => {
         }
     };
 
+    const handleCreateButton = () => {
+        setData(config.defaultData);
+        onCreateOpen();
+    };
+
     const handleDelete = async (dataId: string) => {
         dispatch(deleteDataAsync(dataId));
         dispatch(
@@ -105,6 +116,7 @@ const View = () => {
                 localStorage.getItem(`${config.parentFeature.slice(0, -1)}Id`)
             )
         );
+        setData(data);
         setRerender(!rerender);
     };
 
@@ -142,6 +154,20 @@ const View = () => {
             ...data,
             [name]: value,
         });
+    };
+
+    const handleSelectChange = (
+        event: React.ChangeEvent<HTMLSelectElement>
+    ) => {
+        const { target } = event;
+
+        if (target.type === "select-one") {
+            const selectValue = target.selectedOptions[0].value;
+            setData({
+                ...data,
+                [target.name]: selectValue,
+            });
+        }
     };
 
     const handleLogout = async () => {
@@ -224,7 +250,9 @@ const View = () => {
             const sortable = col.sortable;
             const omit = col.omit;
             colsResult.push({
-                name: name.charAt(0).toUpperCase() + name.slice(1),
+                name: (name.charAt(0).toUpperCase() + name.slice(1))
+                    .split("_")
+                    .join(" "),
                 selector: (row: { [name: string]: string }) => row[name],
                 sortable: sortable,
                 omit: omit,
@@ -298,51 +326,82 @@ const View = () => {
                 <DrawerContent>
                     <DrawerCloseButton />
                     <DrawerHeader borderBottomWidth="1px">
-                        Invite{" "}
+                        Create{" "}
                         {config.singularName.charAt(0).toUpperCase() +
                             config.singularName.slice(1)}
                     </DrawerHeader>
 
                     <DrawerBody>
                         <Stack spacing="24px">
-                            {/* <Box>
-                                <FormLabel htmlFor="name">Name</FormLabel>
-                                <Input
-                                    id="name"
-                                    name="name"
-                                    placeholder="Please enter event name"
-                                    onChange={handleChange}
-                                />
-                            </Box>
-
-                            <Box>
-                                <FormLabel htmlFor="email">Email</FormLabel>
-                                <Input
-                                    id="email"
-                                    name="email"
-                                    placeholder="Please enter participant email"
-                                    onChange={handleChange}
-                                />
-                            </Box> */}
-                            {config.formInputs.map(
-                                (item: string, index: any) => {
+                            {config.formInputs.map((item: any, index: any) => {
+                                if (
+                                    item.type === "text" ||
+                                    item.type === "time" ||
+                                    item.type === "email"
+                                ) {
                                     return (
                                         <Box key={index}>
-                                            <FormLabel htmlFor={item}>
-                                                {item.charAt(0).toUpperCase() +
-                                                    item.slice(1)}
+                                            <FormLabel htmlFor={item.name}>
+                                                {(
+                                                    item.name
+                                                        .charAt(0)
+                                                        .toUpperCase() +
+                                                    item.name.slice(1)
+                                                )
+                                                    .split("_")
+                                                    .join(" ")}
                                             </FormLabel>
+
                                             <Input
-                                                id={item}
-                                                name={item}
-                                                placeholder={`Pleas enter the ${item} of the ${config.singularName}`}
+                                                id={item.name}
+                                                name={item.name}
+                                                placeholder={`Pleas enter the ${item.name} of the ${config.singularName}`}
                                                 onChange={handleChange}
-                                                value={(data as any)[item]}
+                                                value={(data as any)[item.name]}
+                                                type={item.type}
                                             />
                                         </Box>
                                     );
+                                } else if (item.type === "select") {
+                                    return (
+                                        <Box key={index}>
+                                            <FormLabel htmlFor={item.name}>
+                                                {(
+                                                    item.name
+                                                        .charAt(0)
+                                                        .toUpperCase() +
+                                                    item.name.slice(1)
+                                                )
+                                                    .split("_")
+                                                    .join(" ")}
+                                            </FormLabel>
+
+                                            <Select
+                                                id={item.name}
+                                                name={item.name}
+                                                placeholder={`Pleas enter the ${item.name} of the ${config.singularName}`}
+                                                value={(data as any)[item.name]}
+                                                onChange={handleSelectChange}
+                                            >
+                                                {item.options.map(
+                                                    (
+                                                        option: any,
+                                                        index: any
+                                                    ) => {
+                                                        return (
+                                                            <option
+                                                                value={option}
+                                                            >
+                                                                {option}
+                                                            </option>
+                                                        );
+                                                    }
+                                                )}
+                                            </Select>
+                                        </Box>
+                                    );
                                 }
-                            )}
+                            })}
                         </Stack>
                     </DrawerBody>
 
@@ -371,36 +430,142 @@ const View = () => {
                 <DrawerContent>
                     <DrawerCloseButton />
                     <DrawerHeader borderBottomWidth="1px">
-                        Invite{" "}
+                        Update{" "}
                         {config.singularName.charAt(0).toUpperCase() +
                             config.singularName.slice(1)}
                     </DrawerHeader>
 
                     <DrawerBody>
                         <Stack spacing="24px">
-                            <Box>
-                                <FormLabel htmlFor="name">Name</FormLabel>
-                                <Input
-                                    // ref={firstField}
-                                    id="name"
-                                    name="name"
-                                    placeholder="Please enter event name"
-                                    onChange={handleChange}
-                                    value={data.name}
-                                />
-                            </Box>
+                            {config.updateFormInputs.map(
+                                (item: any, index: any) => {
+                                    if (
+                                        item.type === "text" ||
+                                        item.type === "time" ||
+                                        item.type === "email"
+                                    ) {
+                                        return (
+                                            <Box key={index}>
+                                                <FormLabel htmlFor={item.name}>
+                                                    {(
+                                                        item.name
+                                                            .charAt(0)
+                                                            .toUpperCase() +
+                                                        item.name.slice(1)
+                                                    )
+                                                        .split("_")
+                                                        .join(" ")}
+                                                </FormLabel>
 
-                            <Box>
-                                <FormLabel htmlFor="email">Email</FormLabel>
-                                <Input
-                                    // ref={firstField}
-                                    id="email"
-                                    name="email"
-                                    placeholder="Please enter participant email"
-                                    onChange={handleChange}
-                                    value={data.email}
-                                />
-                            </Box>
+                                                <Input
+                                                    id={item.name}
+                                                    name={item.name}
+                                                    placeholder={`Pleas enter the ${item.name} of the ${config.singularName}`}
+                                                    onChange={handleChange}
+                                                    value={
+                                                        (data as any)[item.name]
+                                                    }
+                                                    type={item.type}
+                                                />
+                                            </Box>
+                                        );
+                                    } else if (
+                                        item.type === "select" &&
+                                        item.name === "order_number"
+                                    ) {
+                                        const range = [
+                                            ...Array(_data.length),
+                                        ].map((_, index) => index + 1);
+                                        return (
+                                            <Box key={index}>
+                                                <FormLabel htmlFor={item.name}>
+                                                    {(
+                                                        item.name
+                                                            .charAt(0)
+                                                            .toUpperCase() +
+                                                        item.name.slice(1)
+                                                    )
+                                                        .split("_")
+                                                        .join(" ")}
+                                                </FormLabel>
+
+                                                <Select
+                                                    id={item.name}
+                                                    name={item.name}
+                                                    // placeholder={`Pleas enter the ${item.name} of the ${config.singularName}`}
+                                                    value={
+                                                        (data as any)[item.name]
+                                                    }
+                                                    onChange={
+                                                        handleSelectChange
+                                                    }
+                                                >
+                                                    {range.map(
+                                                        (
+                                                            option: any,
+                                                            index: any
+                                                        ) => {
+                                                            return (
+                                                                <option
+                                                                    value={
+                                                                        option
+                                                                    }
+                                                                >
+                                                                    {option}
+                                                                </option>
+                                                            );
+                                                        }
+                                                    )}
+                                                </Select>
+                                            </Box>
+                                        );
+                                    } else if (item.type === "select") {
+                                        return (
+                                            <Box key={index}>
+                                                <FormLabel htmlFor={item.name}>
+                                                    {(
+                                                        item.name
+                                                            .charAt(0)
+                                                            .toUpperCase() +
+                                                        item.name.slice(1)
+                                                    )
+                                                        .split("_")
+                                                        .join(" ")}
+                                                </FormLabel>
+
+                                                <Select
+                                                    id={item.name}
+                                                    name={item.name}
+                                                    // placeholder={`Pleas enter the ${item.name} of the ${config.singularName}`}
+                                                    value={
+                                                        (data as any)[item.name]
+                                                    }
+                                                    onChange={
+                                                        handleSelectChange
+                                                    }
+                                                >
+                                                    {item.options.map(
+                                                        (
+                                                            option: any,
+                                                            index: any
+                                                        ) => {
+                                                            return (
+                                                                <option
+                                                                    value={
+                                                                        option
+                                                                    }
+                                                                >
+                                                                    {option}
+                                                                </option>
+                                                            );
+                                                        }
+                                                    )}
+                                                </Select>
+                                            </Box>
+                                        );
+                                    }
+                                }
+                            )}
                         </Stack>
                     </DrawerBody>
 
@@ -462,9 +627,9 @@ const View = () => {
                     colorScheme="blue"
                     size="sm"
                     mb="30px"
-                    onClick={onCreateOpen}
+                    onClick={() => handleCreateButton()}
                 >
-                    Invite{" "}
+                    Create{" "}
                     {config.singularName.charAt(0).toUpperCase() +
                         config.singularName.slice(1)}
                 </Button>

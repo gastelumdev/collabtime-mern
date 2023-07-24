@@ -23,131 +23,144 @@ exports.config = {
               message: '{VALUE} is not a valid email!'
             }
         },
+        order_number: {
+            type: Number,
+            require: true,
+        },
+        division: {
+            type: String,
+            require: false,
+        },
+        performance_time: {
+            type: String,
+            require: false,
+        },
         status: {
             type: String,
             require: true,
         },
         street: {
             type: String,
-            requier: false,
+            require: false,
         },
         city: {
             type: String,
-            requier: false,
+            require: false,
         },
         state: {
             type: String,
-            requier: false,
+            require: false,
         },
         zipcode: {
             type: String,
-            requier: false,
+            require: false,
         },
         band_director_name: {
             type: String,
-            requier: false,
+            require: false,
         },
         band_director_phone: {
             type: String,
-            requier: false,
+            require: false,
         },
         band_director_email: {
             type: String,
-            requier: false,
+            require: false,
         },
         booster_parent_name: {
             type: String,
-            requier: false,
+            require: false,
         },
         booster_parent_phone: {
             type: String,
-            requier: false,
+            require: false,
         },
         booster_parent_email: {
             type: String,
-            requier: false,
+            require: false,
         },
         parade_march_title: {
             type: String,
-            requier: false,
+            require: false,
         },
         parade_march_composer: {
             type: String,
-            requier: false,
+            require: false,
         },
         additional_band_staff_names: {
             type: String,
-            requier: false,
+            require: false,
         },
         drum_major: {
             type: String,
-            requier: false,
+            require: false,
         },
         drum_major_name: {
             type: String,
-            requier: false,
+            require: false,
         },
         color_guard_advisor: {
             type: String,
-            requier: false,
+            require: false,
         },
         color_guard_captains: {
             type: String,
-            requier: false,
+            require: false,
         },
         drill_team: {
             type: String,
-            requier: false,
+            require: false,
         },
         drill_team_advisor: {
             type: String,
-            requier: false,
+            require: false,
         },
         drill_team_captains: {
             type: String,
-            requier: false,
+            require: false,
         },
         school_enrollment: {
             type: String,
-            requier: false,
+            require: false,
         },
         number_of_students_in_band: {
             type: Number,
-            requier: false,
+            require: false,
         },
         number_of_students_in_color_guard: {
             type: Number,
-            requier: false,
+            require: false,
         },
         number_of_students_in_drill_team: {
             type: Number,
-            requier: false,
+            require: false,
         },
         number_of_buses: {
             type: Number,
-            requier: false,
+            require: false,
         },
         number_of_box_trucks: {
             type: Number,
-            requier: false,
+            require: false,
         },
         number_of_trailers: {
             type: Number,
-            requier: false,
+            require: false,
         },
         number_of_tractor_trailer_rigs: {
             type: Number,
-            requier: false,
+            require: false,
         },
         special_instructions: {
             type: String,
-            requier: false,
+            require: false,
         },
         event: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Event"
         }
     },
+    orderedList: true,
     inputRequest: true,
     emailOptions: {
         from: '#{sender}',

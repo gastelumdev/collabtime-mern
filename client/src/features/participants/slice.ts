@@ -18,7 +18,7 @@ interface TDataState {
 const initialState: TDataState = {
     data: [],
     createdData: {},
-    oneData: {name: '', email: ''},
+    oneData: config.defaultData,
     status: 'idle',
     err: null,
 }
@@ -40,7 +40,6 @@ export const getDataAsync = createAsyncThunk(
 export const createDataAsync = createAsyncThunk(
     `${config.name}/create`,
     async (data: TData, {rejectWithValue}) => {
-        console.log(data)
         try {
             data.status = "Pending";
             const response = await createData(data);
@@ -146,7 +145,6 @@ export const slice = createSlice({
         })
         .addCase(createDataAsync.rejected, (state, action) => {
             state.status = 'failed';
-            console.log(action.payload);
             state.err = "Already exists";
         })
         .addCase(getOneDataAsync.pending, (state) => {

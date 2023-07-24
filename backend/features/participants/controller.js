@@ -6,7 +6,15 @@ const nodemailer = require("nodemailer");
 exports.getData = async (request, response) => {
     if (request.user) {
         console.log("parent feature", config.parentFeature)
-        const data = await Model.find({[config.parentFeature]: request.params.dataId});
+        let data;
+
+        if (config.orderedList) {
+            data = await Model.find({[config.parentFeature]: request.params.dataId}).sort({"order_number": 1});
+        } else {
+            data = await Model.find({[config.parentFeature]: request.params.dataId});
+        }
+
+        console.log(data)
 
         try {
             response.send(data);
@@ -20,6 +28,7 @@ exports.getData = async (request, response) => {
 
 exports.createData = async (request, response) => {
     if (request.user) {
+        console.log(request.body)
         const data = new Model(request.body);
 
         try {
@@ -28,7 +37,7 @@ exports.createData = async (request, response) => {
             if (config.inputRequest) {
                 const transporter = nodemailer.createTransport(
                     {
-                        port: 465,               // true for 465, false for other ports
+                        port: 465,
                         host: process.env.EMAIL_HOST,
                         auth: {
                             user: process.env.EMAIL_USER,

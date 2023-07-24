@@ -2,6 +2,9 @@ export interface TData {
     _id?: any | null;
     name: string;
     email: string;
+    order_number: Number;
+    division: string;
+    performance_time: string;
     status?: 'Pending' | 'Submitted' | 'Verified';
     street?: string;
     city?: string;
