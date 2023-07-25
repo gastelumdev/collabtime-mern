@@ -85,6 +85,7 @@ const defaultData =  {
     },
     redirectComponent: "participants",
     parentFeature: "events",
+    sideBarNav: true,
     formInputs: [{name: 'name', type: "text", options: []}, {name: 'email', type: "email", options: []}, {name: 'division', type: "select", options: ["Host", "A", "B", "C", "AA"]}, {name: 'performance_time', type: "time", options: []}],
     updateFormInputs: [{name: 'order_number', type: "select", options: ["None"]}, {name: 'name', type: "text", options: []}, {name: 'email', type: "email", options: []}, {name: 'division', type: "select", options: ["Host", "A", "B", "C", "AA"]}, {name: 'performance_time', type: "time", options: []}],
     orderedList: true, // Ordered lists require an "order_number" column in the columns array above

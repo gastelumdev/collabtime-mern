@@ -17,6 +17,7 @@ import {
     Center,
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
+import avatar from "../avatar.png";
 
 interface TAuth {
     logout(): void;
@@ -68,22 +69,12 @@ export default function Nav({ logout }: TAuth) {
                                     cursor={"pointer"}
                                     minW={0}
                                 >
-                                    <Avatar
-                                        size={"sm"}
-                                        src={
-                                            "https://avatars.dicebear.com/api/male/username.svg"
-                                        }
-                                    />
+                                    <Avatar size={"sm"} src={avatar} />
                                 </MenuButton>
                                 <MenuList alignItems={"center"}>
                                     <br />
                                     <Center>
-                                        <Avatar
-                                            size={"2xl"}
-                                            src={
-                                                "https://avatars.dicebear.com/api/male/username.svg"
-                                            }
-                                        />
+                                        <Avatar size={"2xl"} src={avatar} />
                                     </Center>
                                     <br />
                                     <Center>

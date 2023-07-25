@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import SidebarWithHeader from "../../components/DashboardNav";
 import {
     Box,
     Button,
@@ -41,6 +40,7 @@ import { AddIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import NavBar from "../../components/NavBar";
 import { logoutAsync } from "../auth/authSlice";
 import config from "./config";
+import SidebarWithHeader from "../../components/SidebarWithHeader";
 
 const View = () => {
     const _data = useAppSelector(selectData);
@@ -71,7 +71,6 @@ const View = () => {
                 localStorage.getItem(`${config.parentFeature.slice(0, -1)}Id`)
             )
         );
-        console.log(rerender);
     }, [dispatch, rerender, data]);
 
     const createData = async () => {
@@ -313,9 +312,72 @@ const View = () => {
         },
     ];
 
+    const content = () => {
+        return (
+            <>
+                <Box
+                    bg="white"
+                    w={"full"}
+                    borderWidth="1px"
+                    borderRadius="lg"
+                    p={5}
+                    mb={2}
+                >
+                    <Breadcrumb
+                        spacing="8px"
+                        separator={<ChevronRightIcon color="gray.500" />}
+                    >
+                        <BreadcrumbItem>
+                            <BreadcrumbLink href={`/#/`}>
+                                {config.parentFeature.charAt(0).toUpperCase() +
+                                    config.parentFeature.slice(1)}
+                            </BreadcrumbLink>
+                        </BreadcrumbItem>
+
+                        <BreadcrumbItem isCurrentPage>
+                            <BreadcrumbLink href="#">
+                                {config.name.charAt(0).toUpperCase() +
+                                    config.name.slice(1)}
+                            </BreadcrumbLink>
+                        </BreadcrumbItem>
+                    </Breadcrumb>
+                </Box>
+                <Box
+                    // maxW={{ base: "full", md: "275px" }}
+                    bg="white"
+                    w={"full"}
+                    borderWidth="1px"
+                    borderRadius="lg"
+                    p={5}
+                >
+                    <Button
+                        leftIcon={<AddIcon />}
+                        colorScheme="blue"
+                        size="sm"
+                        mb="30px"
+                        onClick={() => handleCreateButton()}
+                    >
+                        Create{" "}
+                        {config.singularName.charAt(0).toUpperCase() +
+                            config.singularName.slice(1)}
+                    </Button>
+
+                    {/* Datatable */}
+                    <ExportCSV />
+                </Box>
+            </>
+        );
+    };
+
     return (
         <ChakraProvider>
-            <NavBar logout={handleLogout} />
+            {!config.sideBarNav ? <NavBar logout={handleLogout} /> : null}
+            {config.sideBarNav ? (
+                <SidebarWithHeader content={content()} />
+            ) : (
+                content()
+            )}
+
             <Drawer
                 isOpen={isCreateOpen}
                 placement="right"
@@ -587,63 +649,7 @@ const View = () => {
                 </DrawerContent>
             </Drawer>
             {/* <h1>{params.id}</h1> */}
-            <Box
-                bg="white"
-                w={"full"}
-                borderWidth="1px"
-                borderRadius="lg"
-                p={5}
-                mb={2}
-            >
-                <Breadcrumb
-                    spacing="8px"
-                    separator={<ChevronRightIcon color="gray.500" />}
-                >
-                    <BreadcrumbItem>
-                        <BreadcrumbLink href={`/#/`}>
-                            {config.parentFeature.charAt(0).toUpperCase() +
-                                config.parentFeature.slice(1)}
-                        </BreadcrumbLink>
-                    </BreadcrumbItem>
-
-                    <BreadcrumbItem isCurrentPage>
-                        <BreadcrumbLink href="#">
-                            {config.name.charAt(0).toUpperCase() +
-                                config.name.slice(1)}
-                        </BreadcrumbLink>
-                    </BreadcrumbItem>
-                </Breadcrumb>
-            </Box>
-            <Box
-                // maxW={{ base: "full", md: "275px" }}
-                bg="white"
-                w={"full"}
-                borderWidth="1px"
-                borderRadius="lg"
-                p={5}
-            >
-                <Button
-                    leftIcon={<AddIcon />}
-                    colorScheme="blue"
-                    size="sm"
-                    mb="30px"
-                    onClick={() => handleCreateButton()}
-                >
-                    Create{" "}
-                    {config.singularName.charAt(0).toUpperCase() +
-                        config.singularName.slice(1)}
-                </Button>
-
-                {/* Datatable */}
-                <ExportCSV />
-
-                {/* <DataTable
-                        columns={columns}
-                        data={participants}
-                        selectableRows
-                        pagination
-                    /> */}
-            </Box>
+            {/* <SimpleSideBar /> */}
         </ChakraProvider>
     );
 };
