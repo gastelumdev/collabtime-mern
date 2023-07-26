@@ -81,7 +81,7 @@ const defaultData =  {
         number_of_trailers: "",
         number_of_tractor_trailer_rigs: "",
         special_instructions: "",
-        event: localStorage.getItem("eventId"),
+        event: "",
     },
     redirectComponent: "participants",
     parentFeature: "events",
@@ -92,7 +92,5 @@ const defaultData =  {
     dataForm: true,
     formPageTitles: [{name: "Participant", number: 1}, {name: "Address", number: 2}, {name: "Band Info", number: 3}, {name: "Band Info", number: 4}, {name: "Band Info", number: 5}],
 }
-
-console.log(localStorage.getItem("eventId"))
 
 export default defaultData;

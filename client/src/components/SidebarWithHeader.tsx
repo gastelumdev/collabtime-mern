@@ -33,14 +33,19 @@ import {
     FiChevronDown,
 } from "react-icons/fi";
 import { IconType } from "react-icons";
+import logo from "../logo.png";
+import { Link, Navigate, redirect } from "react-router-dom";
+import { link } from "fs";
 
 interface LinkItemProps {
     name: string;
     icon: IconType;
+    href: string;
 }
 
 interface NavItemProps extends FlexProps {
     icon: IconType;
+    href: string;
     children: React.ReactNode;
 }
 
@@ -53,11 +58,12 @@ interface SidebarProps extends BoxProps {
 }
 
 const LinkItems: Array<LinkItemProps> = [
-    { name: "Home", icon: FiHome },
-    { name: "Trending", icon: FiTrendingUp },
-    { name: "Explore", icon: FiCompass },
-    { name: "Favourites", icon: FiStar },
-    { name: "Settings", icon: FiSettings },
+    { name: "Events", icon: FiHome, href: "/" },
+    {
+        name: "Participants",
+        icon: FiTrendingUp,
+        href: `/participants/${localStorage.getItem("eventId")}/`,
+    },
 ];
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
@@ -78,16 +84,14 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
                 mx="8"
                 justifyContent="space-between"
             >
-                <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-                    Logo
-                </Text>
+                <img src={logo} height={75} width={75} />
                 <CloseButton
                     display={{ base: "flex", md: "none" }}
                     onClick={onClose}
                 />
             </Flex>
             {LinkItems.map((link) => (
-                <NavItem key={link.name} icon={link.icon}>
+                <NavItem key={link.name} icon={link.icon} href={link.href}>
                     {link.name}
                 </NavItem>
             ))}
@@ -95,13 +99,17 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
     );
 };
 
-const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
+const NavItem = ({ icon, href, children, ...rest }: NavItemProps) => {
+    const handleClick = () => {
+        console.log(href);
+        return <Navigate to={href} replace />;
+    };
+
     return (
         <Box
-            as="a"
-            href="#"
             style={{ textDecoration: "none" }}
             _focus={{ boxShadow: "none" }}
+            onClick={() => handleClick()}
         >
             <Flex
                 align="center"

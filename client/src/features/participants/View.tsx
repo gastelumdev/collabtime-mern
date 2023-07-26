@@ -48,6 +48,8 @@ const View = () => {
     const toast = useToast();
     const error = useAppSelector(selectError);
 
+    console.log(localStorage.getItem(`${config.parentFeature.slice(0, -1)}Id`));
+
     const [rerender, setRerender] = useState(false);
     const [data, setData] = useState<TData>(config.defaultData);
     const [isCreate, setIsCreate] = useState(true);
@@ -79,17 +81,17 @@ const View = () => {
             console.log(_data.length);
             data.order_number = (_data as any).length + 1;
         }
-        console.log(data);
-        dispatch(createDataAsync(data));
+        console.log("createData:", data);
+        dispatch(
+            createDataAsync({
+                ...data,
+                event: localStorage.getItem(
+                    `${config.parentFeature.slice(0, -1)}Id`
+                ),
+            })
+        );
         setData(config.defaultData);
-        console.log(
-            "PARENT FEATURE:",
-            `${config.parentFeature.slice(0, -1)}Id`
-        );
-        console.log(
-            "LS EVENT ID:",
-            localStorage.getItem(`${config.parentFeature.slice(0, -1)}Id`)
-        );
+
         dispatch(
             getDataAsync(
                 localStorage.getItem(`${config.parentFeature.slice(0, -1)}Id`)
@@ -130,10 +132,6 @@ const View = () => {
     const handleUpdateButton = async (data: TData) => {
         setIsCreate(true);
         onUpdateOpen();
-        console.log(
-            "FROM UPDATE BUTTON:",
-            localStorage.getItem(`${config.parentFeature.slice(0, -1)}Id`)
-        );
         setData({
             ...data,
             [config.parentFeature.slice(0, -1)]: localStorage.getItem(

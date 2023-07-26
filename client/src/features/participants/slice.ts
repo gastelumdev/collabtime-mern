@@ -40,9 +40,11 @@ export const getDataAsync = createAsyncThunk(
 export const createDataAsync = createAsyncThunk(
     `${config.name}/create`,
     async (data: TData, {rejectWithValue}) => {
+        console.log("createDataAsync:", data)
         try {
             data.status = "Pending";
             const response = await createData(data);
+            console.log(response.data)
             return response.data;
         } catch (err) {
             const errors = err as Error | AxiosError;
@@ -139,9 +141,8 @@ export const slice = createSlice({
         })
         .addCase(createDataAsync.fulfilled, (state, action) => {
             state.status = 'idle';
-            console.log(action.payload);
             state.createdData = action.payload;
-            
+            state.data.concat(action.payload);
         })
         .addCase(createDataAsync.rejected, (state, action) => {
             state.status = 'failed';
@@ -155,6 +156,16 @@ export const slice = createSlice({
             state.data = action.payload;
         })
         .addCase(getOneDataAsync.rejected, (state) => {
+            state.status = 'failed';
+        })
+        .addCase(deleteDataAsync.pending, (state) => {
+            state.status = 'loading';
+        })
+        .addCase(deleteDataAsync.fulfilled, (state, action) => {
+            state.status = 'idle';
+            state.data = state.data.filter(item => item != action.payload) as [TData];
+        })
+        .addCase(deleteDataAsync.rejected, (state) => {
             state.status = 'failed';
         })
     }

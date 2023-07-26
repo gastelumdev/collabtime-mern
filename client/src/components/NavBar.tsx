@@ -18,6 +18,8 @@ import {
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import avatar from "../avatar.png";
+import logo from "../logo.png";
+import SvgComponent from "./Logo";
 
 interface TAuth {
     logout(): void;
@@ -49,7 +51,9 @@ export default function Nav({ logout }: TAuth) {
                     alignItems={"center"}
                     justifyContent={"space-between"}
                 >
-                    <Box>Collabtime</Box>
+                    <Box>
+                        <img src={logo} width={75} height={75} />
+                    </Box>
 
                     <Flex alignItems={"center"}>
                         <Stack direction={"row"} spacing={7}>
