@@ -34,18 +34,14 @@ import {
 } from "react-icons/fi";
 import { IconType } from "react-icons";
 import logo from "../logo.png";
-import { Link, Navigate, redirect } from "react-router-dom";
-import { link } from "fs";
 
 interface LinkItemProps {
     name: string;
     icon: IconType;
-    href: string;
 }
 
 interface NavItemProps extends FlexProps {
     icon: IconType;
-    href: string;
     children: React.ReactNode;
 }
 
@@ -58,12 +54,11 @@ interface SidebarProps extends BoxProps {
 }
 
 const LinkItems: Array<LinkItemProps> = [
-    { name: "Events", icon: FiHome, href: "/" },
-    {
-        name: "Participants",
-        icon: FiTrendingUp,
-        href: `/participants/${localStorage.getItem("eventId")}/`,
-    },
+    { name: "Home", icon: FiHome },
+    { name: "Trending", icon: FiTrendingUp },
+    { name: "Explore", icon: FiCompass },
+    { name: "Favourites", icon: FiStar },
+    { name: "Settings", icon: FiSettings },
 ];
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
@@ -91,7 +86,7 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
                 />
             </Flex>
             {LinkItems.map((link) => (
-                <NavItem key={link.name} icon={link.icon} href={link.href}>
+                <NavItem key={link.name} icon={link.icon}>
                     {link.name}
                 </NavItem>
             ))}
@@ -99,17 +94,13 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
     );
 };
 
-const NavItem = ({ icon, href, children, ...rest }: NavItemProps) => {
-    const handleClick = () => {
-        console.log(href);
-        return <Navigate to={href} replace />;
-    };
-
+const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
     return (
         <Box
+            as="a"
+            href="#"
             style={{ textDecoration: "none" }}
             _focus={{ boxShadow: "none" }}
-            onClick={() => handleClick()}
         >
             <Flex
                 align="center"
