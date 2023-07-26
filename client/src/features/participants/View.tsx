@@ -82,6 +82,14 @@ const View = () => {
         console.log(data);
         dispatch(createDataAsync(data));
         setData(config.defaultData);
+        console.log(
+            "PARENT FEATURE:",
+            `${config.parentFeature.slice(0, -1)}Id`
+        );
+        console.log(
+            "LS EVENT ID:",
+            localStorage.getItem(`${config.parentFeature.slice(0, -1)}Id`)
+        );
         dispatch(
             getDataAsync(
                 localStorage.getItem(`${config.parentFeature.slice(0, -1)}Id`)
