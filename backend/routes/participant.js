@@ -1,6 +1,7 @@
 var express = require("express"),
   router = express.Router(),
   verifyToken = require('../middleware/authJWT');
+const imageUpload = require("../middleware/imageUpload")
 const { default: mongoose } = require("mongoose");
 const participantModel = require("../models/Participant");
 const nodemailer = require("nodemailer");
@@ -108,7 +109,7 @@ router.post("/participants/delete/:id", verifyToken, async (request, response) =
     }
 })
 
-router.post("/participants/update/form/:id", async (request, response) => {
+router.post("/participants/update/form/:id", imageUpload.single('school_logo'), async (request, response) => {
     
     console.log("Try to edit", request.body);
 

@@ -28,7 +28,7 @@ exports.getData = async (request, response) => {
 
 exports.createData = async (request, response) => {
     if (request.user) {
-        console.log(request.body)
+        console.log("REQUEST BODY:", request.body)
         const data = new Model(request.body);
 
         try {

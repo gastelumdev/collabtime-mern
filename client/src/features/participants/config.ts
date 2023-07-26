@@ -93,4 +93,6 @@ const defaultData =  {
     formPageTitles: [{name: "Participant", number: 1}, {name: "Address", number: 2}, {name: "Band Info", number: 3}, {name: "Band Info", number: 4}, {name: "Band Info", number: 5}],
 }
 
+console.log(localStorage.getItem("eventId"))
+
 export default defaultData;
