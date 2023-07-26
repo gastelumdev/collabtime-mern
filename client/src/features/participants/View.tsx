@@ -130,6 +130,10 @@ const View = () => {
     const handleUpdateButton = async (data: TData) => {
         setIsCreate(true);
         onUpdateOpen();
+        console.log(
+            "FROM UPDATE BUTTON:",
+            localStorage.getItem(`${config.parentFeature.slice(0, -1)}Id`)
+        );
         setData({
             ...data,
             [config.parentFeature.slice(0, -1)]: localStorage.getItem(
