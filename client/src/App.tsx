@@ -17,6 +17,7 @@ import Dashboard from "./components/Dashboard";
 import Participants from "./features/participants/View";
 import Register from "./features/auth/Register";
 import ParticipantForm from "./features/participants/DataForm";
+import { EventsList } from "./features/api/EventsList";
 
 function App() {
     const [isAuthenticated, setIsAuthenticated] = useState(
@@ -45,6 +46,7 @@ function App() {
                     path="/participants/form/:id/"
                     element={<ParticipantForm />}
                 />
+                <Route path="/eventsList" element={<EventsList />} />
                 {/* <Route path="/register" element={<Register />} /> */}
             </Routes>
         </Router>
