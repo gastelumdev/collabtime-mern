@@ -427,7 +427,12 @@ const View = () => {
                                             <Input
                                                 id={item.name}
                                                 name={item.name}
-                                                placeholder={`Pleas enter the ${item.name} of the ${config.singularName}`}
+                                                placeholder={`${
+                                                    config.singularName
+                                                        .charAt(0)
+                                                        .toUpperCase() +
+                                                    config.singularName.slice(1)
+                                                } ${item.name}`}
                                                 onChange={handleChange}
                                                 value={(data as any)[item.name]}
                                                 type={item.type}
@@ -451,7 +456,12 @@ const View = () => {
                                             <Select
                                                 id={item.name}
                                                 name={item.name}
-                                                placeholder={`Pleas enter the ${item.name} of the ${config.singularName}`}
+                                                placeholder={`${
+                                                    config.singularName
+                                                        .charAt(0)
+                                                        .toUpperCase() +
+                                                    config.singularName.slice(1)
+                                                } ${item.name}`}
                                                 value={(data as any)[item.name]}
                                                 onChange={handleSelectChange}
                                             >

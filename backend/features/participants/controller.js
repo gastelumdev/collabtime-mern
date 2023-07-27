@@ -28,7 +28,6 @@ exports.getData = async (request, response) => {
 
 exports.createData = async (request, response) => {
     if (request.user) {
-        console.log("REQUEST BODY:", request.body)
         const data = new Model(request.body);
 
         try {
@@ -65,7 +64,7 @@ exports.createData = async (request, response) => {
             }
             
         } catch (error) {
-            console.log(error)
+            console.log("500 ERROR:", error);
             response.status(500).send(error);
         }
     } else {

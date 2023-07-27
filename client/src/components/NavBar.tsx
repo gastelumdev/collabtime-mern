@@ -15,6 +15,7 @@ import {
     Stack,
     useColorMode,
     Center,
+    Text,
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import avatar from "../avatar.png";
@@ -45,25 +46,26 @@ export default function Nav({ logout }: TAuth) {
     const { isOpen, onOpen, onClose } = useDisclosure();
     return (
         <>
-            <Box bg={useColorModeValue("gray.100", "gray.900")} px={4}>
+            <Box bg={"#ffffff"} pr={8} pl={12}>
                 <Flex
-                    h={16}
+                    h={20}
                     alignItems={"center"}
                     justifyContent={"space-between"}
                 >
                     <Box>
-                        <img src={logo} width={75} height={75} />
+                        {/* <img src={logo} width={75} height={75} /> */}
+                        <Text fontSize={"24px"}>CollabTime</Text>
                     </Box>
 
                     <Flex alignItems={"center"}>
                         <Stack direction={"row"} spacing={7}>
-                            <Button onClick={toggleColorMode}>
+                            {/* <Button onClick={toggleColorMode}>
                                 {colorMode === "light" ? (
                                     <MoonIcon />
                                 ) : (
                                     <SunIcon />
                                 )}
-                            </Button>
+                            </Button> */}
 
                             <Menu>
                                 <MenuButton
@@ -73,10 +75,10 @@ export default function Nav({ logout }: TAuth) {
                                     cursor={"pointer"}
                                     minW={0}
                                 >
-                                    <Avatar size={"sm"} src={avatar} />
+                                    <Avatar size={"sm"} />
                                 </MenuButton>
                                 <MenuList alignItems={"center"}>
-                                    <br />
+                                    {/* <br />
                                     <Center>
                                         <Avatar size={"2xl"} src={avatar} />
                                     </Center>
@@ -86,7 +88,7 @@ export default function Nav({ logout }: TAuth) {
                                     </Center>
                                     <br />
                                     <MenuDivider />
-                                    {/* <MenuItem>Your Servers</MenuItem>
+                                    <MenuItem>Your Servers</MenuItem>
                                     <MenuItem>Account Settings</MenuItem> */}
                                     <MenuItem onClick={logout}>Logout</MenuItem>
                                 </MenuList>

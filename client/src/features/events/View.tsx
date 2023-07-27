@@ -155,7 +155,7 @@ const View = () => {
             </Drawer>
 
             {/********************* PAGE BODY **********************/}
-            <Container maxW="4xl" pt={"30px"} pb={"50px"}>
+            <Container maxW="4xl" pt={"30px"} pb={"50px"} bg={"#EDF2F7"}>
                 <Button
                     leftIcon={<AddIcon />}
                     colorScheme="blue"

@@ -1,5 +1,7 @@
 "use client";
 
+import config from "../config";
+
 import {
     IconButton,
     Avatar,
@@ -32,16 +34,19 @@ import {
     FiBell,
     FiChevronDown,
 } from "react-icons/fi";
+
 import { IconType } from "react-icons";
 import logo from "../logo.png";
 
 interface LinkItemProps {
     name: string;
+    href: string;
     icon: IconType;
 }
 
 interface NavItemProps extends FlexProps {
     icon: IconType;
+    href: string;
     children: React.ReactNode;
 }
 
@@ -53,13 +58,7 @@ interface SidebarProps extends BoxProps {
     onClose: () => void;
 }
 
-const LinkItems: Array<LinkItemProps> = [
-    { name: "Home", icon: FiHome },
-    { name: "Trending", icon: FiTrendingUp },
-    { name: "Explore", icon: FiCompass },
-    { name: "Favourites", icon: FiStar },
-    { name: "Settings", icon: FiSettings },
-];
+const LinkItems: Array<LinkItemProps> = config.dashboardNavLinks;
 
 const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
     return (
@@ -76,41 +75,63 @@ const SidebarContent = ({ onClose, ...rest }: SidebarProps) => {
             <Flex
                 h="20"
                 alignItems="center"
-                mx="8"
+                mx="6"
+                // mb="14"
+                pl="0"
                 justifyContent="space-between"
             >
-                <img src={logo} height={75} width={75} />
+                {/* <img src={logo} height={75} width={75} /> */}
+                <Text fontSize={"24px"}>CollabTime</Text>
                 <CloseButton
                     display={{ base: "flex", md: "none" }}
                     onClick={onClose}
                 />
             </Flex>
-            {LinkItems.map((link) => (
-                <NavItem key={link.name} icon={link.icon}>
-                    {link.name}
-                </NavItem>
-            ))}
+            {LinkItems.map((link) => {
+                if (link.name !== config.parentFeature) {
+                    return (
+                        <NavItem
+                            key={link.name}
+                            icon={link.icon}
+                            href={
+                                link.href +
+                                `${localStorage.getItem(
+                                    config.localStorageId
+                                )}/`
+                            }
+                        >
+                            {link.name}
+                        </NavItem>
+                    );
+                }
+                return (
+                    <NavItem key={link.name} icon={link.icon} href={link.href}>
+                        {link.name}
+                    </NavItem>
+                );
+            })}
         </Box>
     );
 };
 
-const NavItem = ({ icon, children, ...rest }: NavItemProps) => {
+const NavItem = ({ icon, href, children, ...rest }: NavItemProps) => {
     return (
         <Box
             as="a"
-            href="#"
+            href={href}
             style={{ textDecoration: "none" }}
             _focus={{ boxShadow: "none" }}
         >
             <Flex
                 align="center"
                 p="4"
-                mx="4"
-                borderRadius="lg"
+                pl="6"
+                // mx="8"
+                // borderRadius="lg"
                 role="group"
                 cursor="pointer"
                 _hover={{
-                    bg: "cyan.400",
+                    bg: "#3182ce",
                     color: "white",
                 }}
                 {...rest}

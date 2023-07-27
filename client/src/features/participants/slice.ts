@@ -164,6 +164,7 @@ export const slice = createSlice({
         .addCase(deleteDataAsync.fulfilled, (state, action) => {
             state.status = 'idle';
             state.data = state.data.filter(item => item != action.payload) as [TData];
+            console.log(state.data)
         })
         .addCase(deleteDataAsync.rejected, (state) => {
             state.status = 'failed';
