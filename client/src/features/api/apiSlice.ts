@@ -9,14 +9,6 @@ export const apiSlice = createApi({
         headers.set("Content-type", "application/json");
         headers.set("Authorization", "JWT " + localStorage.getItem("token"));
     }}),
-    endpoints: builder => ({
-        getEvents: builder.query({
-            query: () => "/events"
-        }),
-        login: builder.query({
-            query: ({email, password}: TSignin) => "/login"
-        })
-    })
+    endpoints: () => ({}),
 });
 
-export const { useGetEventsQuery } = apiSlice;

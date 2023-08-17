@@ -38,6 +38,7 @@ import {
     HStack,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
+import { useGetEventsQuery } from "./rtkSlice";
 
 const View = () => {
     const dispatch = useAppDispatch();
