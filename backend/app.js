@@ -18,7 +18,7 @@ console.log(process.env.MONGODB_URI)
 
 // middleware
 const corsOptions = {
-    origin: process.env.CORS_URL
+    origin: process.env.CORS_URL || "https:collabtime-cl.onrender.com"
 }
 
 app.use(bodyparser.urlencoded({ extended: false }));
