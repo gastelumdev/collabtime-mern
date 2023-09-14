@@ -72,12 +72,7 @@ export function Login() {
                         <Text>Use Email: collabtime@gmail.com</Text>
                         <Text>Password: coll@bUsr123</Text>
                     </Stack>
-                    <Box
-                        rounded={"lg"}
-                        // bg={useColorModeValue("white", "gray.700")}
-                        boxShadow={"lg"}
-                        p={8}
-                    >
+                    <Box rounded={"lg"} bg={"white"} boxShadow={"lg"} p={8}>
                         <Stack spacing={4}>
                             <FormControl id="email">
                                 <FormLabel>Email</FormLabel>
