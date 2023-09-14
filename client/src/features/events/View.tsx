@@ -170,6 +170,12 @@ const View = () => {
                             config.name.slice(1)}
                     </Center>
                 </Heading>
+                <Text mb={"40px"}>
+                    <Center>
+                        Create an event and then click view to invite
+                        participants.
+                    </Center>
+                </Text>
                 <SimpleGrid
                     spacing={4}
                     templateColumns="repeat(auto-fill, minmax(200px, 1fr))"

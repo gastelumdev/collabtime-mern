@@ -23,6 +23,7 @@ import {
     MenuDivider,
     MenuItem,
     MenuList,
+    Button,
 } from "@chakra-ui/react";
 import {
     FiHome,
@@ -52,6 +53,7 @@ interface NavItemProps extends FlexProps {
 
 interface MobileProps extends FlexProps {
     onOpen: () => void;
+    handleLogout: () => void;
 }
 
 interface SidebarProps extends BoxProps {
@@ -152,7 +154,7 @@ const NavItem = ({ icon, href, children, ...rest }: NavItemProps) => {
     );
 };
 
-const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
+const MobileNav = ({ onOpen, handleLogout, ...rest }: MobileProps) => {
     return (
         <Flex
             ml={{ base: 0, md: 60 }}
@@ -231,7 +233,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
                             <MenuItem>Settings</MenuItem>
                             <MenuItem>Billing</MenuItem>
                             <MenuDivider /> */}
-                            <MenuItem>Sign out</MenuItem>
+                            <MenuItem onClick={handleLogout}>Sign out</MenuItem>
                         </MenuList>
                     </Menu>
                 </Flex>
@@ -240,7 +242,7 @@ const MobileNav = ({ onOpen, ...rest }: MobileProps) => {
     );
 };
 
-const SidebarWithHeader = ({ content }: any) => {
+const SidebarWithHeader = ({ content, handleLogout }: any) => {
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     return (
@@ -262,7 +264,7 @@ const SidebarWithHeader = ({ content }: any) => {
                 </DrawerContent>
             </Drawer>
             {/* mobilenav */}
-            <MobileNav onOpen={onOpen} />
+            <MobileNav onOpen={onOpen} handleLogout={handleLogout} />
             <Box ml={{ base: 0, md: 60 }} p="4">
                 {/* Content */}
                 {content}

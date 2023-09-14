@@ -22,6 +22,7 @@ import {
     BreadcrumbItem,
     BreadcrumbLink,
     Select,
+    Center,
 } from "@chakra-ui/react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import DataTable, { TableColumn, TableRow } from "react-data-table-component";
@@ -372,6 +373,22 @@ const View = () => {
                             config.singularName.slice(1)}
                     </Button>
 
+                    <Text mb={"40px"} p={"20px"}>
+                        <Center>
+                            When creating a participant, be sure to enter the
+                            correct email. The reason being that the participant
+                            will recieve an invitation email with a link to a
+                            form where they will submit their information for
+                            the event. Once the participant is created, the
+                            invitation status will be pending. Once the form is
+                            completed by the participant, status will show a
+                            status of "Verify" which also serves as a link to
+                            the form where it can be reviewed and accepted. Once
+                            accepted, the status will show as "Verified" and
+                            that participant is good to go.
+                        </Center>
+                    </Text>
+
                     {/* Datatable */}
                     <ExportCSV />
                 </Box>
@@ -383,7 +400,10 @@ const View = () => {
         <ChakraProvider>
             {!config.sideBarNav ? <NavBar logout={handleLogout} /> : null}
             {config.sideBarNav ? (
-                <SidebarWithHeader content={content()} />
+                <SidebarWithHeader
+                    content={content()}
+                    handleLogout={handleLogout}
+                />
             ) : (
                 content()
             )}

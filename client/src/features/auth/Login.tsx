@@ -69,6 +69,8 @@ export function Login() {
                             to enjoy all of our cool{" "}
                             <Link to="/">features</Link> ✌️
                         </Text>
+                        <Text>Use Email: collabtime@gmail.com</Text>
+                        <Text>Password: coll@bUsr123</Text>
                     </Stack>
                     <Box
                         rounded={"lg"}
