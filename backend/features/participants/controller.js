@@ -45,19 +45,29 @@ exports.createData = async (request, response) => {
                         secure: true,
                     }
                 );
+
+                console.log(request.body.email)
+
+                const mailData = {
+                    from: process.env.EMAIL_USER,
+                    to: request.body.email,
+                    subject: 'Welcome to AFOB',
+                    html: '<h1>AFOB Information Request Form</h1><p>Please follow the link below to submit your participation information.</p><a href="#{url}/#/participants/form/#{id}">Participant Form</a>',
+                }
         
-                const mailData = config.emailOptions;
-                mailData.from = mailData.from.format({sender: process.env.EMAIL_USER})
-                mailData.to = mailData.to.format({recipient: request.body.email});
-                mailData.html = mailData.html.format({url: process.env.CORS_URL, id: data._id});
+                // const mailData = config.emailOptions;
+                // mailData.from = mailData.from.format({sender: process.env.EMAIL_USER})
+                // mailData.to = mailData.to.format({recipient: request.body.email});
+                // mailData.html = mailData.html.format({url: process.env.CORS_URL, id: data._id});
         
                 transporter.sendMail(mailData, function (err, info) {
                     
                     if(err)
-                      return console.log(err);
+                        return console.log(err);
                     else
-                        console.log(config.name, data)
-                      response.status(200).send(data);
+                        console.log(info);
+                        console.log(config.name, data);
+                        response.status(200).send(data);
                  });
             } else {
                 response.status(200).send(data);
